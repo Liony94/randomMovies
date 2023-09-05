@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="flex justify-center items-center h-screen bg-gray-100">
+        <div class="relative">
+            <!-- Shadow Cards -->
+            <div class="absolute inset-0 transform translate-x-4 translate-y-4 bg-white rounded-xl shadow-lg"></div>
+            <div class="absolute inset-0 transform translate-x-2 translate-y-2 bg-white rounded-xl shadow-lg"></div>
+
+            <!-- Main Card -->
+            <div class="card w-[400px] p-4 bg-white rounded-xl shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 z-10">
+                <img class="w-full h-96 rounded-t-xl object-cover" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+                <div class="p-4">
+                    <h1 class="text-2xl font-semibold mb-2">{{ movie.title }}</h1>
+                    <p class="text-gray-600">Rating: {{ movie.vote_average }}</p>
+                    <p class="text-gray-600">Category: {{ movie.genre_ids|join(', ') }}</p>
+                </div>
+                <div class="flex justify-around p-4">
+                    <a href="{{ path('app_action', {'type': 'like', 'movieDbId': movie.id}) }}" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
+                        ❤️
+                    </a>
+                    <a href="{{ path('app_action', {'type': 'dislike', 'movieDbId': movie.id}) }}" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
+                        👎
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
