@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -62,13 +63,16 @@ class HomeController extends AbstractController
         // Pick the first movie to display
         $currentMovie = reset($allMovies);
 
+        $genres = $this->fetchMovieGenres();
+
         return $this->render('home/index.html.twig', [
             'movie' => $currentMovie,
+            'genres' => $genres,
         ]);
     }
 
     #[Route('/action/{type}/{movieDbId}', name: 'app_action')]
-    public function action(string $type, int $movieDbId, Security $security, EntityManagerInterface $em): Response
+    public function action(string $type, int $movieDbId, Security $security, EntityManagerInterface $em): JsonResponse
     {
         $user = $security->getUser();  // get currently logged in user
 
@@ -96,6 +100,68 @@ class HomeController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('app_home');
+        return new JsonResponse(['status' => 'success']);
+    }
+
+    #[Route('/random_movie', name: 'app_random_movie')]
+    public function randomMovie(Security $security, EntityManagerInterface $em): JsonResponse
+    {
+        $user = $security->getUser();  // get currently logged in user
+
+        // Fetch movies already liked by the user
+        $likedMovies = [];
+        if ($user instanceof User) {
+            foreach ($user->getWatchedMovies() as $movie) {
+                $likedMovies[] = $movie->getMovieDbId();
+            }
+        }
+
+        // Fetch new movies from MovieDB API
+        $endpoints = ['popular', 'now_playing', 'top_rated', 'upcoming'];
+        $allMovies = [];
+
+        foreach ($endpoints as $endpoint) {
+            $response = $this->client->request('GET', 'https://api.themoviedb.org/3/movie/' . $endpoint, [
+                'query' => [
+                    'api_key' => $_ENV['TMDB_API_KEY'],
+                    'language' => 'fr-FR',
+                    'page' => 1,
+                ],
+            ]);
+
+            $data = $response->toArray();
+            $allMovies = array_merge($allMovies, $data['results']);
+        }
+
+        // Filter out movies that the user has already liked
+        $allMovies = array_filter($allMovies, function($movie) use ($likedMovies) {
+            return !in_array($movie['id'], $likedMovies);
+        });
+
+        shuffle($allMovies);
+
+        // Pick the first movie to display
+        $nextRandomMovie = reset($allMovies);
+
+        return new JsonResponse(['next_movie' => $nextRandomMovie, 'genres' => $this->fetchMovieGenres()]);
+    }
+
+    public function fetchMovieGenres(): array
+    {
+        $response = $this->client->request('GET', 'https://api.themoviedb.org/3/genre/movie/list', [
+            'query' => [
+                'api_key' => $_ENV['TMDB_API_KEY'],
+                'language' => 'fr-FR'
+            ],
+        ]);
+
+        $data = $response->toArray();
+        $genres = [];
+
+        foreach ($data['genres'] as $genre) {
+            $genres[$genre['id']] = $genre['name'];
+        }
+
+        return $genres;
     }
 }

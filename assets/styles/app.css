@@ -2,3 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    background: rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+}
+
+.border-pastel-green {
+    border-color: #77dd77;
+}
+
+.text-pastel-green {
+    color: #77dd77;
+}
+
+@keyframes swipeRight {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(55px);
+    }
+}
+
+@keyframes swipeLeft {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-55px);
+    }
+}
+
+.swipe-right {
+    animation: swipeRight 0.5s ease-in-out forwards;
+}
+
+.swipe-left {
+    animation: swipeLeft 0.5s ease-in-out forwards;
+}
+
+

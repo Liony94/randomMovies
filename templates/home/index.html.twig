@@ -2,30 +2,135 @@
 
 {% block body %}
 
-    <div class="flex justify-center items-center h-screen bg-gray-100">
+    <div class="flex justify-center items-center min-h-screen">
         <div class="relative">
-            <!-- Shadow Cards -->
             <div class="absolute inset-0 transform translate-x-4 translate-y-4 bg-white rounded-xl shadow-lg"></div>
             <div class="absolute inset-0 transform translate-x-2 translate-y-2 bg-white rounded-xl shadow-lg"></div>
 
-            <!-- Main Card -->
-            <div class="card w-[400px] p-4 bg-white rounded-xl shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110 z-10">
-                <img class="w-full h-96 rounded-t-xl object-cover" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+            <div class="card w-[420px] p-4 bg-white rounded-xl shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 z-10">
+                <img id="movie-image" class="w-full h-96 rounded-t-xl object-cover" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+
                 <div class="p-4">
-                    <h1 class="text-2xl font-semibold mb-2">{{ movie.title }}</h1>
-                    <p class="text-gray-600">Rating: {{ movie.vote_average }}</p>
-                    <p class="text-gray-600">Category: {{ movie.genre_ids|join(', ') }}</p>
+                    <h1 id="movie-title" class="text-2xl font-semibold mb-2 text-gray-800">{{ movie.title }}</h1>
+                    <div class="flex items-center mb-2">
+                    <span id="movie-rating" class="bg-white border-2 border-green-200 text-green-600 w-10 h-10 flex items-center justify-center rounded-full">
+                        {{ movie.vote_average }}
+                    </span>
+                    </div>
+
+                    <div id="movie-categories" class="flex flex-wrap mt-2">
+                        {% for genre_id in movie.genre_ids %}
+                            <span class="text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full bg-gradient-to-r from-green-400 to-blue-500">
+                            {{ genres[genre_id] }}
+                        </span>
+                        {% endfor %}
+                    </div>
                 </div>
+
                 <div class="flex justify-around p-4">
-                    <a href="{{ path('app_action', {'type': 'like', 'movieDbId': movie.id}) }}" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
+                    <a id="like-button" href="#" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
                         ❤️
                     </a>
-                    <a href="{{ path('app_action', {'type': 'dislike', 'movieDbId': movie.id}) }}" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
+                    <a id="dislike-button" href="#" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
                         👎
                     </a>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const likeButton = document.querySelector('#like-button');
+            const dislikeButton = document.querySelector('#dislike-button');
+            const card = document.querySelector('.card');
+            let movieId = {{ movie.id }};
+            let nextMovie = null;
+
+            fetchNextMovie();
+
+            likeButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                handleAction('like', movieId);
+            });
+
+            dislikeButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                handleAction('dislike', movieId);
+            });
+
+            function handleAction(type, movieId) {
+
+                card.classList.add(type === 'like' ? 'swipe-right' : 'swipe-left');
+
+                if (type === 'dislike') {
+                    const currentTime = new Date().getTime();
+                    localStorage.setItem(`disliked_${movieId}`, currentTime);
+                }
+
+                card.addEventListener('animationend', function() {
+
+                    card.classList.remove('swipe-right', 'swipe-left');
+
+                    fetch(`/action/${type}/${movieId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                updateCard(nextMovie);
+                                fetchNextMovie();
+                            }
+                        });
+                }, {once: true});
+            }
+
+            function fetchNextMovie() {
+                fetch('/random_movie', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        nextMovie = data.next_movie;
+
+                        const dislikedTime = localStorage.getItem(`disliked_${nextMovie.id}`);
+                        const currentTime = new Date().getTime();
+
+                        if (dislikedTime && (currentTime - dislikedTime <= 24 * 60 * 60 * 1000)) {
+                            fetchNextMovie();
+                            return;
+                        }
+
+                        updateCard(nextMovie);
+                    });
+            }
+
+            function updateCard(movie) {
+                const genres = {{ genres|json_encode|raw }};
+                document.querySelector('#movie-title').textContent = movie.title;
+                document.querySelector('#movie-rating').textContent = movie.vote_average;
+                document.querySelector('#movie-image').src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                movieId = movie.id;
+
+                const genreContainer = document.querySelector('#movie-categories');
+                genreContainer.innerHTML = '';
+                movie.genre_ids.forEach(genre_id => {
+                    const genreName = genres[genre_id];
+                    const genreSpan = document.createElement('span');
+                    genreSpan.className = 'text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full bg-gradient-to-r from-green-400 to-blue-500';
+                    genreSpan.textContent = genreName;
+                    genreContainer.appendChild(genreSpan);
+                });
+            }
+        });
+    </script>
 
 {% endblock %}
