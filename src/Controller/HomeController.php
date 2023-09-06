@@ -26,9 +26,8 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(Request $request, Security $security, EntityManagerInterface $em): Response
     {
-        $user = $security->getUser();  // get currently logged in user
+        $user = $security->getUser();
 
-        // Fetch movies already liked by the user
         $likedMovies = [];
         if ($user instanceof User) {
             foreach ($user->getWatchedMovies() as $movie) {
@@ -36,7 +35,6 @@ class HomeController extends AbstractController
             }
         }
 
-        // Fetch new movies from MovieDB API
         $endpoints = ['popular', 'now_playing', 'top_rated', 'upcoming'];
         $allMovies = [];
 
@@ -53,14 +51,12 @@ class HomeController extends AbstractController
             $allMovies = array_merge($allMovies, $data['results']);
         }
 
-        // Filter out movies that the user has already liked
         $allMovies = array_filter($allMovies, function($movie) use ($likedMovies) {
             return !in_array($movie['id'], $likedMovies);
         });
 
         shuffle($allMovies);
 
-        // Pick the first movie to display
         $currentMovie = reset($allMovies);
 
         $genres = $this->fetchMovieGenres();
@@ -68,18 +64,21 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig', [
             'movie' => $currentMovie,
             'genres' => $genres,
+            'user' => $user,
         ]);
     }
 
     #[Route('/action/{type}/{movieDbId}', name: 'app_action')]
     public function action(string $type, int $movieDbId, Security $security, EntityManagerInterface $em): JsonResponse
     {
-        $user = $security->getUser();  // get currently logged in user
+        $user = $security->getUser();
 
-        // Check if the movie already exists in the database
+        if (!$user instanceof User) {
+            return new JsonResponse(['status' => 'error']);
+        }
+
         $movie = $em->getRepository(Movie::class)->findOneBy(['movieDbId' => $movieDbId]);
 
-        // If the movie doesn't exist, create a new Movie entity and save it
         if ($movie === null) {
             $movie = new Movie();
             $movie->setMovieDbId($movieDbId);
@@ -89,10 +88,8 @@ class HomeController extends AbstractController
 
         if ($user instanceof User && $movie instanceof Movie) {
             if ($type === 'like') {
-                // Handle the like action
                 $user->addWatchedMovie($movie);
             } elseif ($type === 'dislike') {
-                // Handle the dislike action
                 $user->removeWatchedMovie($movie);
             }
 
@@ -106,9 +103,8 @@ class HomeController extends AbstractController
     #[Route('/random_movie', name: 'app_random_movie')]
     public function randomMovie(Security $security, EntityManagerInterface $em): JsonResponse
     {
-        $user = $security->getUser();  // get currently logged in user
+        $user = $security->getUser();
 
-        // Fetch movies already liked by the user
         $likedMovies = [];
         if ($user instanceof User) {
             foreach ($user->getWatchedMovies() as $movie) {
@@ -116,7 +112,6 @@ class HomeController extends AbstractController
             }
         }
 
-        // Fetch new movies from MovieDB API
         $endpoints = ['popular', 'now_playing', 'top_rated', 'upcoming'];
         $allMovies = [];
 
@@ -133,14 +128,12 @@ class HomeController extends AbstractController
             $allMovies = array_merge($allMovies, $data['results']);
         }
 
-        // Filter out movies that the user has already liked
         $allMovies = array_filter($allMovies, function($movie) use ($likedMovies) {
             return !in_array($movie['id'], $likedMovies);
         });
 
         shuffle($allMovies);
 
-        // Pick the first movie to display
         $nextRandomMovie = reset($allMovies);
 
         return new JsonResponse(['next_movie' => $nextRandomMovie, 'genres' => $this->fetchMovieGenres()]);

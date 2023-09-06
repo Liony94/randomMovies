@@ -17,7 +17,6 @@
                         {{ movie.vote_average }}
                     </span>
                     </div>
-
                     <div id="movie-categories" class="flex flex-wrap mt-2">
                         {% for genre_id in movie.genre_ids %}
                             <span class="text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full bg-gradient-to-r from-green-400 to-blue-500">
@@ -28,13 +27,25 @@
                 </div>
 
                 <div class="flex justify-around p-4">
-                    <a id="like-button" href="#" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
-                        ❤️
-                    </a>
-                    <a id="dislike-button" href="#" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
+                    <button id="dislike-button" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
                         👎
-                    </a>
+                    </button>
+                    <button id="like-button" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
+                        ❤️
+                    </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden opacity-0">
+        <div class="bg-black opacity-50 absolute inset-0"></div>
+        <div class="bg-white p-4 rounded-lg w-1/3 z-10 relative">
+            <h1 class="text-2xl mb-4">Information</h1>
+            <p>Vous devez être connecté pour pouvoir commencer à Liker</p>
+            <div class="mt-4 flex justify-end">
+                <a href="{{ path('app_login') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Se connecter</a>
+                <button id="close-modal" class="ml-2 bg-gray-300 text-black px-4 py-2 rounded-lg">Fermer</button>
             </div>
         </div>
     </div>
@@ -46,18 +57,47 @@
             const card = document.querySelector('.card');
             let movieId = {{ movie.id }};
             let nextMovie = null;
+            let userIsLoggedIn = {{ user is defined ? 'true' : 'false' }};
 
             fetchNextMovie();
 
             likeButton.addEventListener('click', function(event) {
                 event.preventDefault();
-                handleAction('like', movieId);
+                if (userIsLoggedIn) {
+                    handleAction('like', movieId);
+                } else {
+                    showLoginModal();
+                }
             });
 
             dislikeButton.addEventListener('click', function(event) {
                 event.preventDefault();
-                handleAction('dislike', movieId);
+                if (userIsLoggedIn) {
+                    handleAction('dislike', movieId);
+                } else {
+                    showLoginModal();
+                }
             });
+
+            document.querySelector('#close-modal').addEventListener('click', function() {
+                hideLoginModal();
+            });
+
+            function showLoginModal() {
+                const loginModal = document.querySelector('#login-modal');
+                loginModal.classList.remove('hidden');
+                setTimeout(() => {
+                    loginModal.style.opacity = "1";
+                }, 10);
+            }
+
+            function hideLoginModal() {
+                const loginModal = document.querySelector('#login-modal');
+                loginModal.style.opacity = "0";
+                setTimeout(() => {
+                    loginModal.classList.add('hidden');
+                }, 300);
+            }
 
             function handleAction(type, movieId) {
 
