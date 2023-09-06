@@ -38,14 +38,18 @@
         </div>
     </div>
 
-    <div id="login-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden opacity-0">
-        <div class="bg-black opacity-50 absolute inset-0"></div>
-        <div class="bg-white p-4 rounded-lg w-1/3 z-10 relative">
-            <h1 class="text-2xl mb-4">Information</h1>
-            <p>Vous devez être connecté pour pouvoir commencer à Liker</p>
-            <div class="mt-4 flex justify-end">
-                <a href="{{ path('app_login') }}" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Se connecter</a>
-                <button id="close-modal" class="ml-2 bg-gray-300 text-black px-4 py-2 rounded-lg">Fermer</button>
+    <div id="login-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300 ease-in-out">
+        <div class="bg-black bg-opacity-50 absolute inset-0"></div>
+        <div class="bg-white p-6 rounded-lg w-full max-w-md z-10 relative shadow-lg">
+            <h1 class="text-2xl mb-4 font-semibold">Information</h1>
+            <p class="text-gray-700">Vous devez être connecté pour pouvoir commencer à Liker</p>
+            <div class="mt-6 flex justify-end space-x-4">
+                <a href="{{ path('app_login') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition duration-200 ease-in-out">
+                    Se connecter
+                </a>
+                <button id="close-modal" class="bg-gray-300 hover:bg-gray-400 text-black px-6 py-2 rounded-lg transition duration-200 ease-in-out">
+                    Fermer
+                </button>
             </div>
         </div>
     </div>
@@ -57,7 +61,7 @@
             const card = document.querySelector('.card');
             let movieId = {{ movie.id }};
             let nextMovie = null;
-            let userIsLoggedIn = {{ user is defined ? 'true' : 'false' }};
+            let userIsLoggedIn = {{ userIsLoggedIn ? 'true' : 'false' }};
 
             fetchNextMovie();
 

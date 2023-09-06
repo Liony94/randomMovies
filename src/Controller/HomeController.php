@@ -64,7 +64,7 @@ class HomeController extends AbstractController
         return $this->render('home/index.html.twig', [
             'movie' => $currentMovie,
             'genres' => $genres,
-            'user' => $user,
+            'userIsLoggedIn' => $user instanceof User
         ]);
     }
 
