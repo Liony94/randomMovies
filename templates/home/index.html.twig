@@ -50,7 +50,7 @@
             </div>
             <div id="details-release-date" class="text-lg mb-2 text-gray-700"></div>
             <div id="details-description" class="text-base mb-4 text-gray-600"></div>
-            <div id="details-trailer" class="mb-4"></div>
+            <iframe id="details-trailer" class="hidden" width="380" height="300" frameborder="0" allowfullscreen></iframe>
             <button id="close-details-modal" class="modal-buton mt-6 text-white px-6 py-2 rounded-lg transition duration-200 ease-in-out">
                 Fermer
             </button>
@@ -186,13 +186,35 @@
                 });
             }
 
+            document.querySelector('#see-more-button').addEventListener('click', function() {
+                fetch(`/movie_details/${movieId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const movieDetails = data.movie_details;
+                        const movieVideos = data.movie_videos.results;
+                        const youtubeTrailer = movieVideos.find(video => video.site === 'YouTube' && video.type === 'Trailer');
+
+                        if (youtubeTrailer) {
+                            const trailerEmbed = document.querySelector('#details-trailer');
+                            trailerEmbed.src = `https://www.youtube.com/embed/${youtubeTrailer.key}`;
+                            trailerEmbed.classList.remove('hidden');
+                        }
+
+                        showDetailsModal(movieDetails);
+                    });
+            });
+
             function showDetailsModal(movie) {
                 const detailsModal = document.querySelector('#details-modal');
-                // Mettez à jour les champs dans la modal avec les données du film
                 document.querySelector('#details-title').textContent = movie.title;
                 document.querySelector('#details-release-date').textContent = "Date de sortie : " + movie.release_date;
                 document.querySelector('#details-description').textContent = movie.overview;
-                // ... et la bande-annonce (vous devrez récupérer cette donnée de l'API)
 
                 detailsModal.classList.remove('hidden');
                 setTimeout(() => {

@@ -40,7 +40,12 @@ class HomeController extends AbstractController
     public function getMovieDetails(int $movieDbId): JsonResponse
     {
         $movieDetails = $this->fetchMovieDetails($movieDbId);
-        return new JsonResponse(['movie_details' => $movieDetails]);
+        $movieVideos = $this->fetchMovieVideos($movieDbId);
+
+        return new JsonResponse([
+            'movie_details' => $movieDetails,
+            'movie_videos' => $movieVideos
+        ]);
     }
 
     #[Route('/action/{type}/{movieDbId}', name: 'app_action')]
@@ -116,6 +121,18 @@ class HomeController extends AbstractController
                 'language' => 'fr-FR',
             ],
         ]);
+        return $response->toArray();
+    }
+
+    private function fetchMovieVideos(int $movieDbId): array
+    {
+        $response = $this->client->request('GET', "https://api.themoviedb.org/3/movie/$movieDbId/videos", [
+            'query' => [
+                'api_key' => $_ENV['TMDB_API_KEY'],
+                'language' => 'fr-FR',
+            ],
+        ]);
+
         return $response->toArray();
     }
 
