@@ -35,9 +35,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'watchedByUsers')]
     private Collection $watchedMovies;
 
+    #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'dislikeByUser')]
+    private Collection $dislikeMovies;
+
     public function __construct()
     {
         $this->watchedMovies = new ArrayCollection();
+        $this->dislikeMovies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,6 +136,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->watchedMovies->removeElement($watchedMovie)) {
             $watchedMovie->removeWatchedByUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Movie>
+     */
+    public function getDislikeMovies(): Collection
+    {
+        return $this->dislikeMovies;
+    }
+
+    public function addDislikeMovie(Movie $dislikeMovie): static
+    {
+        if (!$this->dislikeMovies->contains($dislikeMovie)) {
+            $this->dislikeMovies->add($dislikeMovie);
+            $dislikeMovie->addDislikeByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDislikeMovie(Movie $dislikeMovie): static
+    {
+        if ($this->dislikeMovies->removeElement($dislikeMovie)) {
+            $dislikeMovie->removeDislikeByUser($this);
         }
 
         return $this;

@@ -7,34 +7,53 @@
             <div class="absolute inset-0 transform translate-x-4 translate-y-4 bg-white rounded-xl shadow-lg"></div>
             <div class="absolute inset-0 transform translate-x-2 translate-y-2 bg-white rounded-xl shadow-lg"></div>
 
-            <div class="card w-full sm:w-[420px] p-4 bg-white rounded-xl shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 z-10">
-                <img id="movie-image" class="w-full h-96 rounded-t-xl object-cover" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+            <div class="card w-full sm:w-[420px] p-4 bg-white rounded-xl shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 z-10 min-h-[600px] max-h-[600px]">
+                <img id="movie-image" class="w-full h-96 rounded-t-xl object-cover object-center mb-[-4px]" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
 
-                <div class="p-4">
-                    <h1 id="movie-title" class="text-2xl font-semibold mb-2 text-gray-800">{{ movie.title }}</h1>
-                    <div class="flex items-center mb-2">
-                    <span id="movie-rating" class="bg-white border-2 border-green-200 text-green-600 w-10 h-10 flex items-center justify-center rounded-full">
-                        {{ movie.vote_average }}
-                    </span>
-                    </div>
-                    <div id="movie-categories" class="flex flex-wrap mt-2">
-                        {% for genre_id in movie.genre_ids %}
-                            <span class="text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full bg-gradient-to-r from-green-400 to-blue-500">
-                            {{ genres[genre_id] }}
+                <!-- Content -->
+                <div class="p-4 pt-6">
+                    <div class="flex justify-between items-center">
+                        <h1 id="movie-title" class="text-2xl font-semibold mb-1 text-gray-800">
+                            {{ movie.title }}
+                        </h1>
+                        <span id="movie-rating" class="bg-gray-200 border-2 text-blue-500 border-blue-500 w-10 h-10 flex items-center justify-center rounded-full">
+                            {{ movie.vote_average }}
                         </span>
-                        {% endfor %}
                     </div>
-                </div>
-
-                <div class="flex justify-around p-4">
-                    <button id="dislike-button" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
-                        👎
+                    <button id="see-more-button" class="text-base text-center w-full modal-buton text-white px-4 py-2 rounded-lg m-2">
+                        Voir plus
                     </button>
-                    <button id="like-button" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out">
-                        ❤️
-                    </button>
+                    <!-- Actions -->
+                    <div class="flex justify-center mt-2">
+                        <button id="dislike-button" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out mx-2">
+                            👎
+                        </button>
+                        <button id="like-button" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out mx-2">
+                            ❤️
+                        </button>
+                    </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="details-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300 ease-in-out">
+        <div class="bg-black bg-opacity-50 absolute inset-0"></div>
+        <div class="bg-white p-8 rounded-lg w-full max-w-md z-10 relative shadow-lg transition-transform transform duration-300 ease-in-out scale-95">
+            <h1 id="details-title" class="text-3xl mb-4 font-semibold text-gray-800"></h1>
+            <div id="movie-categories" class="flex flex-wrap justify-center mt-3">
+                {% for genre_id in movie.genre_ids %}
+                    <span class="text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full modal-buton">
+                        {{ genres[genre_id] }}
+                    </span>
+                {% endfor %}
+            </div>
+            <div id="details-release-date" class="text-lg mb-2 text-gray-700"></div>
+            <div id="details-description" class="text-base mb-4 text-gray-600"></div>
+            <div id="details-trailer" class="mb-4"></div>
+            <button id="close-details-modal" class="modal-buton mt-6 text-white px-6 py-2 rounded-lg transition duration-200 ease-in-out">
+                Fermer
+            </button>
         </div>
     </div>
 
@@ -47,7 +66,7 @@
                 <a href="{{ path('app_login') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition duration-200 ease-in-out">
                     Se connecter
                 </a>
-                <button id="close-modal" class="bg-gray-300 hover:bg-gray-400 text-black px-6 py-2 rounded-lg transition duration-200 ease-in-out">
+                <button id="close-modal" class="modal-buton text-black px-6 py-2 rounded-lg transition duration-200 ease-in-out">
                     Fermer
                 </button>
             </div>
@@ -106,12 +125,6 @@
             function handleAction(type, movieId) {
 
                 card.classList.add(type === 'like' ? 'swipe-right' : 'swipe-left');
-
-                if (type === 'dislike') {
-                    const currentTime = new Date().getTime();
-                    localStorage.setItem(`disliked_${movieId}`, currentTime);
-                }
-
                 card.addEventListener('animationend', function() {
 
                     card.classList.remove('swipe-right', 'swipe-left');
@@ -133,7 +146,14 @@
                 }, {once: true});
             }
 
-            function fetchNextMovie() {
+            function fetchNextMovie(retryCount = 0) {
+                const MAX_RETRIES = 5;
+
+                if (retryCount >= MAX_RETRIES) {
+                    console.error('Maximum retries reached');
+                    return;
+                }
+
                 fetch('/random_movie', {
                     method: 'GET',
                     headers: {
@@ -144,15 +164,6 @@
                     .then(response => response.json())
                     .then(data => {
                         nextMovie = data.next_movie;
-
-                        const dislikedTime = localStorage.getItem(`disliked_${nextMovie.id}`);
-                        const currentTime = new Date().getTime();
-
-                        if (dislikedTime && (currentTime - dislikedTime <= 24 * 60 * 60 * 1000)) {
-                            fetchNextMovie();
-                            return;
-                        }
-
                         updateCard(nextMovie);
                     });
             }
@@ -169,11 +180,52 @@
                 movie.genre_ids.forEach(genre_id => {
                     const genreName = genres[genre_id];
                     const genreSpan = document.createElement('span');
-                    genreSpan.className = 'text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full bg-gradient-to-r from-green-400 to-blue-500';
+                    genreSpan.className = 'text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full modal-buton';
                     genreSpan.textContent = genreName;
                     genreContainer.appendChild(genreSpan);
                 });
             }
+
+            function showDetailsModal(movie) {
+                const detailsModal = document.querySelector('#details-modal');
+                // Mettez à jour les champs dans la modal avec les données du film
+                document.querySelector('#details-title').textContent = movie.title;
+                document.querySelector('#details-release-date').textContent = "Date de sortie : " + movie.release_date;
+                document.querySelector('#details-description').textContent = movie.overview;
+                // ... et la bande-annonce (vous devrez récupérer cette donnée de l'API)
+
+                detailsModal.classList.remove('hidden');
+                setTimeout(() => {
+                    detailsModal.style.opacity = "1";
+                }, 10);
+            }
+
+            function hideDetailsModal() {
+                const detailsModal = document.querySelector('#details-modal');
+                detailsModal.style.opacity = "0";
+                setTimeout(() => {
+                    detailsModal.classList.add('hidden');
+                }, 300);
+            }
+
+            document.querySelector('#see-more-button').addEventListener('click', function() {
+                fetch(`/movie_details/${movieId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const movieDetails = data.movie_details;
+                        showDetailsModal(movieDetails);
+                    });
+            });
+
+            document.querySelector('#close-details-modal').addEventListener('click', function() {
+                hideDetailsModal();
+            });
         });
     </script>
 

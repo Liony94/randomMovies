@@ -21,9 +21,15 @@ class Movie
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'watchedMovies')]
     private Collection $watchedByUsers;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'dislikeMovies')]
+    #[ORM\JoinTable(name: "movie_user_dislike")]
+    private Collection $dislikeByUser;
+
+
     public function __construct()
     {
         $this->watchedByUsers = new ArrayCollection();
+        $this->dislikeByUser = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -63,6 +69,30 @@ class Movie
     public function removeWatchedByUser(User $watchedByUser): static
     {
         $this->watchedByUsers->removeElement($watchedByUser);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getDislikeByUser(): Collection
+    {
+        return $this->dislikeByUser;
+    }
+
+    public function addDislikeByUser(User $dislikeByUser): static
+    {
+        if (!$this->dislikeByUser->contains($dislikeByUser)) {
+            $this->dislikeByUser->add($dislikeByUser);
+        }
+
+        return $this;
+    }
+
+    public function removeDislikeByUser(User $dislikeByUser): static
+    {
+        $this->dislikeByUser->removeElement($dislikeByUser);
 
         return $this;
     }

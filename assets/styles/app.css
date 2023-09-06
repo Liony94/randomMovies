@@ -45,3 +45,17 @@ body {
     transition: opacity 0.3s ease;
 }
 
+.modal-buton {
+    background: rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+}
+
+.modal-buton:hover {
+    background: rgb(239, 123, 181);
+    background: radial-gradient(circle, rgb(241, 133, 179) 0%, rgb(116, 173, 241) 100%);
+}
+
+.rate {
+    background: rgb(2,0,36);
+    background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(210,228,80,1) 0%, rgba(0,212,255,1) 100%);
+}
