@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MovieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
@@ -24,6 +25,18 @@ class Movie
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'dislikeMovies')]
     #[ORM\JoinTable(name: "movie_user_dislike")]
     private Collection $dislikeByUser;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $title = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $posterPath = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $trailerUrl = null;
 
 
     public function __construct()
@@ -93,6 +106,54 @@ class Movie
     public function removeDislikeByUser(User $dislikeByUser): static
     {
         $this->dislikeByUser->removeElement($dislikeByUser);
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getPosterPath(): ?string
+    {
+        return $this->posterPath;
+    }
+
+    public function setPosterPath(?string $posterPath): static
+    {
+        $this->posterPath = $posterPath;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getTrailerUrl(): ?string
+    {
+        return $this->trailerUrl;
+    }
+
+    public function setTrailerUrl(?string $trailerUrl): static
+    {
+        $this->trailerUrl = $trailerUrl;
 
         return $this;
     }

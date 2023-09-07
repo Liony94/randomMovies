@@ -32,6 +32,10 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            $name = $user->getUsername();
+            $avatarUrl = "https://avatars.dicebear.com/api/human/$name.svg";
+            $user->setProfileImage($avatarUrl);
+
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email

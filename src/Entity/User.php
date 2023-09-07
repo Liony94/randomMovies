@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -38,10 +39,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Movie::class, mappedBy: 'dislikeByUser')]
     private Collection $dislikeMovies;
 
+    #[ORM\OneToMany(mappedBy: 'sender', targetEntity: FriendsRequest::class)]
+    private Collection $sentFriendRequests;
+
+    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: FriendsRequest::class)]
+    private Collection $receivedFriendRequests;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $username = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profileImage = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
     public function __construct()
     {
         $this->watchedMovies = new ArrayCollection();
         $this->dislikeMovies = new ArrayCollection();
+        $this->sentFriendRequests = new ArrayCollection();
+        $this->receivedFriendRequests = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -164,6 +182,121 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if ($this->dislikeMovies->removeElement($dislikeMovie)) {
             $dislikeMovie->removeDislikeByUser($this);
         }
+
+        return $this;
+    }
+
+    public function getFriends(): Collection
+    {
+        $friends = new ArrayCollection();
+
+        foreach ($this->receivedFriendRequests as $friendRequest) {
+            if ($friendRequest->isAccepted()) {
+                $friends->add($friendRequest->getSender());
+            }
+        }
+
+        foreach ($this->sentFriendRequests as $friendRequest) {
+            if ($friendRequest->isAccepted()) {
+                $friends->add($friendRequest->getReceiver());
+            }
+        }
+
+        return $friends;
+    }
+
+    /**
+     * @return Collection<int, FriendsRequest>
+     */
+    public function getSentFriendRequests(): Collection
+    {
+        return $this->sentFriendRequests;
+    }
+
+    public function addSentFriendRequest(FriendsRequest $sentFriendRequest): static
+    {
+        if (!$this->sentFriendRequests->contains($sentFriendRequest)) {
+            $this->sentFriendRequests->add($sentFriendRequest);
+            $sentFriendRequest->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSentFriendRequest(FriendsRequest $sentFriendRequest): static
+    {
+        if ($this->sentFriendRequests->removeElement($sentFriendRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($sentFriendRequest->getSender() === $this) {
+                $sentFriendRequest->setSender(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, FriendsRequest>
+     */
+    public function getReceivedFriendRequests(): Collection
+    {
+        return $this->receivedFriendRequests;
+    }
+
+    public function addReceivedFriendRequest(FriendsRequest $receivedFriendRequest): static
+    {
+        if (!$this->receivedFriendRequests->contains($receivedFriendRequest)) {
+            $this->receivedFriendRequests->add($receivedFriendRequest);
+            $receivedFriendRequest->setReceiver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceivedFriendRequest(FriendsRequest $receivedFriendRequest): static
+    {
+        if ($this->receivedFriendRequests->removeElement($receivedFriendRequest)) {
+            // set the owning side to null (unless already changed)
+            if ($receivedFriendRequest->getReceiver() === $this) {
+                $receivedFriendRequest->setReceiver(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(?string $username): static
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getProfileImage(): ?string
+    {
+        return $this->profileImage;
+    }
+
+    public function setProfileImage(?string $profileImage): static
+    {
+        $this->profileImage = $profileImage;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

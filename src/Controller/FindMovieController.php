@@ -142,6 +142,17 @@ class FindMovieController extends AbstractController
         if (null === $movie) {
             $movie = new Movie();
             $movie->setMovieDbId($movieDbId);
+
+            $details = $this->fetchMovieDetails($movieDbId);
+            $movie->setTitle($details['title']);
+            $movie->setPosterPath($details['poster_path']);
+            $movie->setDescription($details['overview']);
+
+            $videos = $this->fetchMovieVideos($movieDbId);
+            if (!empty($videos['results'])) {
+                $movie->setTrailerUrl($videos['results'][0]['key']);
+            }
+
             $em->persist($movie);
             $em->flush();
         }

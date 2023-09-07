@@ -10,12 +10,16 @@
             <label>Email</label>
         </div>
         <div class="user-box">
+            {{ form_widget(registrationForm.username, {'attr': {'required': 'required'}}) }}
+            <label>Pseudo</label>
+        </div>
+        <div class="user-box">
             {{ form_widget(registrationForm.plainPassword.first, {'attr': {'required': 'required', 'autocomplete': 'new-password'}}) }}
-            <label>Password</label>
+            <label>Mot de passe</label>
         </div>
         <div class="user-box">
             {{ form_widget(registrationForm.plainPassword.second, {'attr': {'required': 'required', 'autocomplete': 'new-password'}}) }}
-            <label>Confirm Password</label>
+            <label>Confirmation de Mot de passe</label>
         </div>
         {{ form_errors(registrationForm.plainPassword.first) }}
         {{ form_errors(registrationForm.plainPassword.second) }}
