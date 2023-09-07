@@ -25,6 +25,10 @@
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
             {% endif %}
 
+            <center>
+                <p>Vous n'avez pas encore de compte ? <a href="{{ path('app_register') }}">Inscrivez-vous ici</a></p>
+            </center>
+
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
             <center>
