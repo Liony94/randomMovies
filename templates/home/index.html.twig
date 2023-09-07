@@ -1,20 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Welcome to Filminder{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white min-h-screen">
+        <div class="container mx-auto p-4">
+            <div class="text-center py-16">
+                <h1 class="text-5xl font-extrabold mb-4 animate__animated animate__fadeIn">Welcome to Filminder</h1>
+                <p class="text-2xl mb-8">Find your next favorite movie in a swipe!</p>
+                <a href="#" class="text-white bg-blue-500 px-8 py-2 rounded-full text-lg">Get Started</a>
+            </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 text-center py-16">
+                <div class="animate__animated animate__fadeIn animate__delay-1s">
+                    <i class="fas fa-film text-5xl mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-4">Wide Selection</h2>
+                    <p>We offer a huge variety of films for you to swipe through.</p>
+                </div>
+                <div class="animate__animated animate__fadeIn animate__delay-2s">
+                    <i class="fas fa-heart text-5xl mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-4">Personalized</h2>
+                    <p>Get recommendations tailored to your taste.</p>
+                </div>
+                <div class="animate__animated animate__fadeIn animate__delay-3s">
+                    <i class="fas fa-mobile-alt text-5xl mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-4">Mobile Friendly</h2>
+                    <p>Swipe on the go, wherever you are.</p>
+                </div>
+            </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/guill/projet/symonfy/randomMovies/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/guill/projet/symonfy/randomMovies/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
-    </ul>
-</div>
+            <div class="text-center py-16">
+                <h2 class="text-3xl font-bold mb-8 animate__animated animate__fadeIn">Contact Us</h2>
+                <p class="mb-8">Have questions? Feel free to <a href="mailto:info@filminder.com" class="underline">email us</a>.</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
