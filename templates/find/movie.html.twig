@@ -123,10 +123,8 @@
             }
 
             function handleAction(type, movieId) {
-
                 card.classList.add(type === 'like' ? 'swipe-right' : 'swipe-left');
                 card.addEventListener('animationend', function() {
-
                     card.classList.remove('swipe-right', 'swipe-left');
 
                     fetch(`/action/${type}/${movieId}`, {
@@ -139,8 +137,13 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
+                                // Assurez-vous que nextMovie est chargé avant de mettre à jour la carte.
+                                return fetchNextMovie();  // fetchNextMovie devrait retourner une promesse.
+                            }
+                        })
+                        .then(() => {
+                            if (nextMovie) {
                                 updateCard(nextMovie);
-                                fetchNextMovie();
                             }
                         });
                 }, {once: true});
@@ -149,23 +152,25 @@
             function fetchNextMovie(retryCount = 0) {
                 const MAX_RETRIES = 15;
 
-                if (retryCount >= MAX_RETRIES) {
-                    console.error('Maximum retries reached');
-                    return;
-                }
+                return new Promise((resolve, reject) => {
+                    if (retryCount >= MAX_RETRIES) {
+                        reject('Maximum retries reached');
+                        return;
+                    }
 
-                fetch('/random_movie', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        nextMovie = data.next_movie;
-                        updateCard(nextMovie);
-                    });
+                    fetch('/random_movie', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            nextMovie = data.next_movie;
+                            resolve();
+                        });
+                });
             }
 
             function updateCard(movie) {

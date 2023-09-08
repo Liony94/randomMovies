@@ -14,6 +14,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class FindMovieController extends AbstractController
 {
     private HttpClientInterface $client;
+    private $currentPage = 1;
+    private $lastPage = 3;
 
     public function __construct(HttpClientInterface $client)
     {
@@ -81,7 +83,7 @@ class FindMovieController extends AbstractController
         $allMovies = [];
 
         foreach ($endpoints as $endpoint) {
-            for ($page = 1; $page <= 30; $page++) {
+            for ($page = $this->currentPage; $page <= $this->lastPage; $page++) {
                 $response = $this->client->request('GET', "https://api.themoviedb.org/3/movie/$endpoint", [
                     'query' => [
                         'api_key' => $_ENV['TMDB_API_KEY'],
@@ -92,9 +94,21 @@ class FindMovieController extends AbstractController
                 $data = $response->toArray();
                 $allMovies = array_merge($allMovies, $data['results']);
             }
+            $this->currentPage = $this->lastPage + 1;
+            $this->lastPage += 3;
         }
 
         return $allMovies;
+    }
+
+    #[Route('/load_more_movies', name: 'app_load_more_movies')]
+    public function loadMoreMovies(EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+        $allMovies = $this->fetchMoviesFromEndpoints();
+        $filteredMovies = $this->filterMovies($allMovies, $user, $em);
+
+        return new JsonResponse(['new_movies' => $filteredMovies]);
     }
 
     private function filterMovies(array $movies, ?User $user, EntityManagerInterface $em): array
