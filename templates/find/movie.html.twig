@@ -147,7 +147,7 @@
             }
 
             function fetchNextMovie(retryCount = 0) {
-                const MAX_RETRIES = 5;
+                const MAX_RETRIES = 15;
 
                 if (retryCount >= MAX_RETRIES) {
                     console.error('Maximum retries reached');

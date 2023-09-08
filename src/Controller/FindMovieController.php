@@ -81,15 +81,17 @@ class FindMovieController extends AbstractController
         $allMovies = [];
 
         foreach ($endpoints as $endpoint) {
-            $response = $this->client->request('GET', "https://api.themoviedb.org/3/movie/$endpoint", [
-                'query' => [
-                    'api_key' => $_ENV['TMDB_API_KEY'],
-                    'language' => 'fr-FR',
-                    'page' => 1,
-                ],
-            ]);
-            $data = $response->toArray();
-            $allMovies = array_merge($allMovies, $data['results']);
+            for ($page = 1; $page <= 30; $page++) {
+                $response = $this->client->request('GET', "https://api.themoviedb.org/3/movie/$endpoint", [
+                    'query' => [
+                        'api_key' => $_ENV['TMDB_API_KEY'],
+                        'language' => 'fr-FR',
+                        'page' => $page,
+                    ],
+                ]);
+                $data = $response->toArray();
+                $allMovies = array_merge($allMovies, $data['results']);
+            }
         }
 
         return $allMovies;
