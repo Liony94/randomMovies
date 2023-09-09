@@ -8,16 +8,16 @@
             <div class="absolute inset-0 transform translate-x-2 translate-y-2 bg-white rounded-xl shadow-lg"></div>
 
             <div class="card w-full sm:w-[420px] p-4 bg-white rounded-xl shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 z-10 min-h-[600px] max-h-[600px]">
-                <img id="movie-image" class="w-full h-96 rounded-t-xl object-cover object-center mb-[-4px]" src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+                <img id="serie-image" class="w-full h-96 rounded-t-xl object-cover object-center mb-[-4px]" src="https://image.tmdb.org/t/p/w500{{ serie.poster_path }}" alt="{{ serie.name }}">
 
                 <!-- Content -->
                 <div class="p-4 pt-6">
                     <div class="flex justify-between items-center">
-                        <h1 id="movie-title" class="text-2xl font-semibold mb-1 text-gray-800">
-                            {{ movie.title }}
+                        <h1 id="serie-title" class="text-2xl font-semibold mb-1 text-gray-800">
+                            {{ serie.name }}
                         </h1>
-                        <span id="movie-rating" class="bg-gray-200 border-2 text-blue-500 border-blue-500 w-10 h-10 flex items-center justify-center rounded-full">
-                            {{ movie.vote_average }}
+                        <span id="serie-rating" class="bg-gray-200 border-2 text-blue-500 border-blue-500 w-10 h-10 flex items-center justify-center rounded-full">
+                            {{ serie.vote_average }}
                         </span>
                     </div>
                     <button id="see-more-button" class="text-base text-center w-full modal-buton text-white px-4 py-2 rounded-lg m-2">
@@ -41,8 +41,8 @@
         <div class="bg-black bg-opacity-50 absolute inset-0"></div>
         <div class="bg-white p-8 rounded-lg w-full max-w-md z-10 relative shadow-lg transition-transform transform duration-300 ease-in-out scale-95">
             <h1 id="details-title" class="text-3xl mb-4 font-semibold text-gray-800"></h1>
-            <div id="movie-categories" class="flex flex-wrap justify-center mt-3">
-                {% for genre_id in movie.genre_ids %}
+            <div id="serie-categories" class="flex flex-wrap justify-center mt-3">
+                {% for genre_id in serie.genre_ids %}
                     <span class="text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full modal-buton">
                         {{ genres[genre_id] }}
                     </span>
@@ -78,16 +78,16 @@
             const likeButton = document.querySelector('#like-button');
             const dislikeButton = document.querySelector('#dislike-button');
             const card = document.querySelector('.card');
-            let movieId = {{ movie.id }};
-            let nextMovie = null;
+            let serieId = {{ serie.id }};
+            let nextSerie = null;
             let userIsLoggedIn = {{ userIsLoggedIn ? 'true' : 'false' }};
 
-            fetchNextMovie();
+            fetchNextSerie();
 
             likeButton.addEventListener('click', function(event) {
                 event.preventDefault();
                 if (userIsLoggedIn) {
-                    handleAction('like', movieId);
+                    handleAction('like', serieId);
                 } else {
                     showLoginModal();
                 }
@@ -96,7 +96,7 @@
             dislikeButton.addEventListener('click', function(event) {
                 event.preventDefault();
                 if (userIsLoggedIn) {
-                    handleAction('dislike', movieId);
+                    handleAction('dislike', serieId);
                 } else {
                     showLoginModal();
                 }
@@ -122,12 +122,12 @@
                 }, 300);
             }
 
-            function handleAction(type, movieId) {
+            function handleAction(type, serieId) {
                 card.classList.add(type === 'like' ? 'swipe-right' : 'swipe-left');
                 card.addEventListener('animationend', function() {
                     card.classList.remove('swipe-right', 'swipe-left');
 
-                    fetch(`/action_movie/${type}/${movieId}`, {
+                    fetch(`/action_serie/${type}/${serieId}`, {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
@@ -137,19 +137,18 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
-                                // Assurez-vous que nextMovie est chargé avant de mettre à jour la carte.
-                                return fetchNextMovie();  // fetchNextMovie devrait retourner une promesse.
+                                return fetchNextSerie();
                             }
                         })
                         .then(() => {
-                            if (nextMovie) {
-                                updateCard(nextMovie);
+                            if (nextSerie) {
+                                updateCard(nextSerie);
                             }
                         });
                 }, {once: true});
             }
 
-            function fetchNextMovie(retryCount = 0) {
+            function fetchNextSerie(retryCount = 0) {
                 const MAX_RETRIES = 15;
 
                 return new Promise((resolve, reject) => {
@@ -158,7 +157,7 @@
                         return;
                     }
 
-                    fetch('/random_movie', {
+                    fetch('/random_serie', {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
@@ -167,22 +166,22 @@
                     })
                         .then(response => response.json())
                         .then(data => {
-                            nextMovie = data.next_movie;
+                            nextSerie = data.next_serie;
                             resolve();
                         });
                 });
             }
 
-            function updateCard(movie) {
+            function updateCard(serie) {
                 const genres = {{ genres|json_encode|raw }};
-                document.querySelector('#movie-title').textContent = movie.title;
-                document.querySelector('#movie-rating').textContent = movie.vote_average;
-                document.querySelector('#movie-image').src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-                movieId = movie.id;
+                document.querySelector('#serie-title').textContent = serie.name;
+                document.querySelector('#serie-rating').textContent = serie.vote_average;
+                document.querySelector('#serie-image').src = `https://image.tmdb.org/t/p/w500${serie.poster_path}`;
+                serieId = serie.id;
 
-                const genreContainer = document.querySelector('#movie-categories');
+                const genreContainer = document.querySelector('#serie-categories');
                 genreContainer.innerHTML = '';
-                movie.genre_ids.forEach(genre_id => {
+                serie.genre_ids.forEach(genre_id => {
                     const genreName = genres[genre_id];
                     const genreSpan = document.createElement('span');
                     genreSpan.className = 'text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full modal-buton';
@@ -192,7 +191,7 @@
             }
 
             document.querySelector('#see-more-button').addEventListener('click', function() {
-                fetch(`/movie_details/${movieId}`, {
+                fetch(`/serie_details/${serieId}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -201,9 +200,9 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        const movieDetails = data.movie_details;
-                        const movieVideos = data.movie_videos.results;
-                        const youtubeTrailer = movieVideos.find(video => video.site === 'YouTube' && video.type === 'Trailer');
+                        const serieDetails = data.serie_details;
+                        const serieVideos = data.serie_videos.results;
+                        const youtubeTrailer = serieVideos.find(video => video.site === 'YouTube' && video.type === 'Trailer');
 
                         if (youtubeTrailer) {
                             const trailerEmbed = document.querySelector('#details-trailer');
@@ -211,15 +210,15 @@
                             trailerEmbed.classList.remove('hidden');
                         }
 
-                        showDetailsModal(movieDetails);
+                        showDetailsModal(serieDetails);
                     });
             });
 
-            function showDetailsModal(movie) {
+            function showDetailsModal(serie) {
                 const detailsModal = document.querySelector('#details-modal');
-                document.querySelector('#details-title').textContent = movie.title;
-                document.querySelector('#details-release-date').textContent = "Date de sortie : " + movie.release_date;
-                document.querySelector('#details-description').textContent = movie.overview;
+                document.querySelector('#details-title').textContent = serie.title;
+                document.querySelector('#details-release-date').textContent = "Date de sortie : " + serie.first_air_date;
+                document.querySelector('#details-description').textContent = serie.overview;
 
                 detailsModal.classList.remove('hidden');
                 setTimeout(() => {
@@ -236,7 +235,7 @@
             }
 
             document.querySelector('#see-more-button').addEventListener('click', function() {
-                fetch(`/movie_details/${movieId}`, {
+                fetch(`/serie_details/${serieId}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -245,8 +244,8 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        const movieDetails = data.movie_details;
-                        showDetailsModal(movieDetails);
+                        const serieDetails = data.serie_details;
+                        showDetailsModal(serieDetails);
                     });
             });
 

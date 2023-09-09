@@ -50,7 +50,7 @@ class FindMovieController extends AbstractController
         ]);
     }
 
-    #[Route('/action/{type}/{movieDbId}', name: 'app_action')]
+    #[Route('/action_movie/{type}/{movieDbId}', name: 'app_action_movie')]
     public function handleAction(string $type, int $movieDbId, EntityManagerInterface $em): JsonResponse
     {
         $user = $this->getUser();
@@ -60,7 +60,9 @@ class FindMovieController extends AbstractController
             return new JsonResponse(['status' => 'error']);
         }
 
-        $this->updateUserAction($type, $user, $movie, $em);
+        if ($user instanceof User) {
+            $this->updateUserAction($type, $user, $movie, $em);
+        }
 
         return new JsonResponse(['status' => 'success']);
     }

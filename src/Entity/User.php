@@ -54,12 +54,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\ManyToMany(targetEntity: Serie::class, mappedBy: 'watchedByUsers')]
+    private Collection $series;
+
+    #[ORM\ManyToMany(targetEntity: Serie::class, mappedBy: 'dislikeByUser')]
+    private Collection $dislikeSeries;
+
     public function __construct()
     {
         $this->watchedMovies = new ArrayCollection();
         $this->dislikeMovies = new ArrayCollection();
         $this->sentFriendRequests = new ArrayCollection();
         $this->receivedFriendRequests = new ArrayCollection();
+        $this->series = new ArrayCollection();
+        $this->dislikeSeries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -297,6 +305,60 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Serie>
+     */
+    public function getSeries(): Collection
+    {
+        return $this->series;
+    }
+
+    public function addSeries(Serie $series): static
+    {
+        if (!$this->series->contains($series)) {
+            $this->series->add($series);
+            $series->addWatchedByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeries(Serie $series): static
+    {
+        if ($this->series->removeElement($series)) {
+            $series->removeWatchedByUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Serie>
+     */
+    public function getDislikeSeries(): Collection
+    {
+        return $this->dislikeSeries;
+    }
+
+    public function addDislikeSeries(Serie $dislikeSeries): static
+    {
+        if (!$this->dislikeSeries->contains($dislikeSeries)) {
+            $this->dislikeSeries->add($dislikeSeries);
+            $dislikeSeries->addDislikeByUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDislikeSeries(Serie $dislikeSeries): static
+    {
+        if ($this->dislikeSeries->removeElement($dislikeSeries)) {
+            $dislikeSeries->removeDislikeByUser($this);
+        }
 
         return $this;
     }

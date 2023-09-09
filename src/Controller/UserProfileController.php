@@ -21,11 +21,13 @@ class UserProfileController extends AbstractController
 
         $userWatchedMovies = $user->getWatchedMovies();
         $lastLikedMovie = $userWatchedMovies->last();
+        $numberOfLikedMovies = count($user->getWatchedMovies());
 
         return $this->render('user/profile.html.twig', [
             'user' => $user,
             'userWatchedMovies' => $userWatchedMovies,
-            'lastLikedMovie' => $lastLikedMovie
+            'lastLikedMovie' => $lastLikedMovie,
+            'numberOfLikedMovies' => $numberOfLikedMovies
         ]);
     }
 
