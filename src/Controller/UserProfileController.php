@@ -34,10 +34,6 @@ class UserProfileController extends AbstractController
     {
         $user = $entityManager->getRepository(User::class)->find($id);
 
-        if (!$user) {
-            return $this->redirectToLogin();
-        }
-
         $currentUser = $this->getUser();
 
         if (!$currentUser instanceof User) {
@@ -46,6 +42,8 @@ class UserProfileController extends AbstractController
 
         $areFriends = $this->areFriends($currentUser, $user);
         $requestSent = $this->requestSent($currentUser, $user);
+        $userWatchedMovies = $user->getWatchedMovies();
+        $lastLikedMovie = $userWatchedMovies->last();
 
         $numberOfFriends = count($user->getFriends());
 
@@ -53,7 +51,8 @@ class UserProfileController extends AbstractController
             'user' => $user,
             'areFriends' => $areFriends,
             'requestSent' => $requestSent,
-            'numberOfFriends' => $numberOfFriends
+            'numberOfFriends' => $numberOfFriends,
+            'lastLikedMovie' => $lastLikedMovie
         ]);
     }
 
