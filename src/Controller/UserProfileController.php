@@ -20,14 +20,19 @@ class UserProfileController extends AbstractController
         }
 
         $userWatchedMovies = $user->getWatchedMovies();
+        $userWatchedSeries = $user->getSeries();
         $lastLikedMovie = $userWatchedMovies->last();
+        $lastLikedSerie = $userWatchedSeries->last();
         $numberOfLikedMovies = count($user->getWatchedMovies());
+        $numberOfLikedSeries = count($user->getSeries());
 
         return $this->render('user/profile.html.twig', [
             'user' => $user,
             'userWatchedMovies' => $userWatchedMovies,
             'lastLikedMovie' => $lastLikedMovie,
-            'numberOfLikedMovies' => $numberOfLikedMovies
+            'lastLikedSerie' => $lastLikedSerie,
+            'numberOfLikedMovies' => $numberOfLikedMovies,
+            'numberOfLikedSeries' => $numberOfLikedSeries
         ]);
     }
 
@@ -45,7 +50,11 @@ class UserProfileController extends AbstractController
         $areFriends = $this->areFriends($currentUser, $user);
         $requestSent = $this->requestSent($currentUser, $user);
         $userWatchedMovies = $user->getWatchedMovies();
+        $userWatchedSeries = $user->getSeries();
+        $lastLikedSerie = $userWatchedSeries->last();
         $lastLikedMovie = $userWatchedMovies->last();
+        $numberOfLikedMovies = count($user->getWatchedMovies());
+        $numberOfLikedSeries = count($user->getSeries());
 
         $numberOfFriends = count($user->getFriends());
 
@@ -54,7 +63,10 @@ class UserProfileController extends AbstractController
             'areFriends' => $areFriends,
             'requestSent' => $requestSent,
             'numberOfFriends' => $numberOfFriends,
-            'lastLikedMovie' => $lastLikedMovie
+            'lastLikedMovie' => $lastLikedMovie,
+            'lastLikedSerie' => $lastLikedSerie,
+            'numberOfLikedMovies' => $numberOfLikedMovies,
+            'numberOfLikedSeries' => $numberOfLikedSeries
         ]);
     }
 

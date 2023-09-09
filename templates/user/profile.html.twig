@@ -24,56 +24,49 @@
                 <div class="innerCard">
                     <div class="frontSide">
                         <p class="title">Mes Stats</p>
-                        <p>Clique ici</p>
+                        <p>Check ça</p>
                     </div>
                     <div class="backSide">
                         <p class="title">Films</p>
                         <p>{{ numberOfLikedMovies }}</p>
                         <p class="title">Séries</p>
-                        <p>Leave Me</p>
-                        <p class="title">Animes</p>
-                        <p>Leave Me</p>
+                        <p>{{ numberOfLikedSeries }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Last liked movie -->
-            <div class="bg-white p-4 rounded-lg shadow-lg">
-                <h3 class="text-xl">Dernier film aimé</h3>
+            <div class="bg-white p-4 rounded-lg shadow-2xl hover:shadow-none transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
+                <h3 class="text-xl font-semibold mb-4 text-center">Dernier film aimé</h3>
                 {% if lastLikedMovie is defined and lastLikedMovie is not empty %}
-                    <p>Titre : {{ lastLikedMovie.title }}</p>
-                    <img src="https://image.tmdb.org/t/p/w300{{ lastLikedMovie.posterPath }}" alt="test">
+                    <img src="https://image.tmdb.org/t/p/w300{{ lastLikedMovie.posterPath }}" alt="{{ lastLikedMovie.title }}" class="rounded mb-2">
+                    <p class="text-gray-700 text-center">{{ lastLikedMovie.title }}</p>
                 {% else %}
-                    <p>Aucun film aimé pour le moment.</p>
+                    <p class="text-gray-700 text-center">Aucun film aimé pour le moment.</p>
                 {% endif %}
-                <button class="bg-blue-500 text-white p-2 rounded-lg mt-2">Voir plus</button>
+                <button class="bg-blue-500 text-white p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>
 
             <!-- Last liked series -->
-            <div class="bg-white p-4 rounded-lg shadow-lg">
-                <h3 class="text-xl">Dernière série aimée</h3>
-                {% if lastLikedSeries is defined %}
-                    <p>Titre : {{ lastLikedSeries.title }}</p>
-                    <img src="https://image.tmdb.org/t/p/w300{{ lastLikedSeries.posterPath }}" alt="test">
+            <div class="bg-white p-4 rounded-lg shadow-2xl hover:shadow-none transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
+                <h3 class="text-xl font-semibold mb-4 text-center">Dernière série aimée</h3>
+                {% if lastLikedSerie is defined and lastLikedSerie is not empty %}
+                    <img src="https://image.tmdb.org/t/p/w300{{ lastLikedSerie.posterPath }}" alt="{{ lastLikedSerie.title }}" class="rounded mb-2">
+                    <p class="text-gray-700 text-center">{{ lastLikedSerie.title }}</p>
                 {% else %}
-                    <p>Aucune série aimée pour le moment.</p>
+                    <p class="text-gray-700 text-center">Aucune série aimée pour le moment.</p>
                 {% endif %}
-                <button class="bg-blue-500 text-white p-2 rounded-lg mt-2">Voir plus</button>
+                <button class="bg-blue-500 text-white p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>
 
             <!-- Last liked animes -->
-            <div class="bg-white p-4 rounded-lg shadow-lg">
-                <h3 class="text-xl">Dernier anime aimé</h3>
-                {% if lastLikedAnimes is defined %}
-                    <p>Titre : {{ lastLikedAnimes.title }}</p>
-                    <img src="https://image.tmdb.org/t/p/w300{{ lastLikedAnimes.posterPath }}" alt="test">
-                {% else %}
-                    <p>Aucun animé aimé pour le moment.</p>
-                {% endif %}
-                <button class="bg-blue-500 text-white p-2 rounded-lg mt-2">Voir plus</button>
+            <div class="bg-white p-4 rounded-lg shadow-2xl hover:shadow-none transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
+                <h3 class="text-xl font-semibold mb-4 text-center">Liste d'amis</h3>
+                <button class="bg-blue-500 text-white p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>
         </div>
+
     </div>
 {% endblock %}
