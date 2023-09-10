@@ -31,15 +31,15 @@ function displayUsers(users) {
         users.forEach(user => {
             const card = document.createElement('a');
             card.href = `/user/profile/${user.id}`;
-            card.className = 'w-full bg-white rounded-lg p-12 flex flex-col justify-center items-center transition-transform transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl';
+            card.className = 'w-full rounded-lg p-12 flex flex-col justify-center items-center transition-transform transform hover:-translate-y-1 hover:scale-105 shadow-lg hover:shadow-xl';
             card.innerHTML = `
                 <div class="mb-8">
                     <img class="object-center object-cover rounded-full h-36 w-36" src="${user.image}" alt="photo">
                 </div>
                 <div class="text-center">
-                    <p class="text-xl text-gray-700 font-bold mb-2">${user.username}</p> 
+                    <p class="text-xl font-bold mb-2">${user.username}</p> 
                     <form class="add-friend-form" data-username="${user.username}">
-                        <button class="text-indigo-600 text-sm font-semibold" type="submit">Envoyer une demande d'ami</button>
+                        <button class="text-sm font-semibold" type="submit">Envoyer une demande d'ami</button>
                     </form>
                 </div>
             `;

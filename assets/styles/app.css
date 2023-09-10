@@ -66,8 +66,8 @@ body::-webkit-scrollbar {
     color: white;
 }
 
-.dark-mode .antialiased {
-    background-color: #1a202c;  /* Couleur de fond pour la barre de navigation en mode sombre */
+.dark-mode .navDark {
+    background-color: #1a202c;
 }
 
 .dark-mode .darkModeBlue  {

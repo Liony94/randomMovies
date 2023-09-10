@@ -229,6 +229,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $friends;
     }
 
+    public function removeFriend(User $friend): ?FriendsRequest
+    {
+        foreach ($this->receivedFriendRequests as $friendRequest) {
+            if ($friendRequest->isAccepted() && $friendRequest->getSender() === $friend) {
+                $this->receivedFriendRequests->removeElement($friendRequest);
+                return $friendRequest;
+            }
+        }
+
+        foreach ($this->sentFriendRequests as $friendRequest) {
+            if ($friendRequest->isAccepted() && $friendRequest->getReceiver() === $friend) {
+                $this->sentFriendRequests->removeElement($friendRequest);
+                return $friendRequest;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return Collection<int, FriendsRequest>
      */

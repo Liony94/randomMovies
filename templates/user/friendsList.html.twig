@@ -21,8 +21,13 @@
                             <p class="darkModeTextWhite text-xl text-gray-700 font-bold mb-2">{{ friend.username }}</p>
                         </div>
                     </a>
-                    <div class="mt-4">
+                    <div class="mt-4 flex flex-col items-center space-y-2">
                         <a href="{{ path('app_user_match', {'id': friend.id}) }}" class="text-sm font-medium">Match</a>
+                        <form action="{{ path('app_user_friends_remove', {'id': friend.id}) }}" method="post">
+                            <button type="submit" class="text-red-600 text-sm font-semibold">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             {% endfor %}

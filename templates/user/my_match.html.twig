@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Matchs{% endblock %}
+
+{% block body %}
+    <div class="container mx-auto p-4">
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold mb-4">Mes Matchs</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for match in myMatchedMovies %}
+                    <div class="card p-4 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                        <h3 class="text-xl font-semibold mb-2">{{ match.title }}</h3>
+                        <img src="https://image.tmdb.org/t/p/w300{{ match.posterPath }}" alt="{{ match.title }}" class="rounded mb-2">
+                        {#                        <p>Date du match : {{ match.matchDate|date('d-m-Y') }}</p>#}
+                    </div>
+                {% endfor %}
+
+                {% for match in myMatchedSeries %}
+                    <div class="card p-4 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                        <h3 class="text-xl font-semibold mb-2">{{ match.title }}</h3>
+                        <img src="https://image.tmdb.org/t/p/w300{{ match.posterPath }}" alt="{{ match.title }}" class="rounded mb-2">
+                        {#                        <p>Date du match : {{ match.matchDate|date('d-m-Y') }}</p>#}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

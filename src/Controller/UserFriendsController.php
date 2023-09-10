@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\FriendsRequest;
+use App\Entity\User;
+use App\Repository\FriendsRequestRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,7 +43,7 @@ class UserFriendsController extends AbstractController
     }
 
     #[Route(path: '/user/friends/{username}', name: 'app_user_friends_add', methods: ['POST'])]
-    public function addFriend(EntityManagerInterface $entityManager, UserRepository $userRepository, string $username): Response
+    public function addFriend(EntityManagerInterface $entityManager, UserRepository $userRepository, FriendsRequestRepository $friendsRequestRepository, string $username): Response
     {
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
@@ -57,11 +59,21 @@ class UserFriendsController extends AbstractController
             throw $this->createNotFoundException('L\'utilisateur demandé n\'existe pas.');
         }
 
-        $friendRequest = new FriendsRequest();
-        $friendRequest->setSender($user);
-        $friendRequest->setReceiver($receiver);
+        $existingRequest = $friendsRequestRepository->findOneBy([
+            'sender' => $receiver,
+            'receiver' => $user,
+            'accepted' => false
+        ]);
 
-        $entityManager->persist($friendRequest);
+        if ($existingRequest) {
+            $existingRequest->setAccepted(true);
+        } else {
+            $friendRequest = new FriendsRequest();
+            $friendRequest->setSender($user);
+            $friendRequest->setReceiver($receiver);
+            $entityManager->persist($friendRequest);
+        }
+
         $entityManager->flush();
 
         return new Response('Demande d\'ami envoyée avec succès.');
@@ -103,11 +115,43 @@ class UserFriendsController extends AbstractController
         }
 
         $user = $this->getUser();
-        $receivedFriendRequests = $user->getReceivedFriendRequests();
+        $receivedFriendRequests = $user->getReceivedFriendRequests()->toArray();
+
+        $unacceptedFriendRequests = array_filter($receivedFriendRequests, function($request) {
+            return !$request->isAccepted();
+        });
 
         return $this->render('user/friendsRequest.html.twig', [
-            'receivedFriendRequests' => $receivedFriendRequests,
+            'receivedFriendRequests' => $unacceptedFriendRequests,
         ]);
+    }
+
+    #[Route(path: '/user/friends/{id}/remove', name: 'app_user_friends_remove', methods: ['POST'])]
+    public function removeFriend(EntityManagerInterface $entityManager, int $id): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $friend = $entityManager->getRepository(User::class)->find($id);
+        if (!$friend) {
+            throw $this->createNotFoundException('L\'ami n\'existe pas.');
+        }
+
+        $user = $this->getUser();
+        $friendRequestToRemove = $user->removeFriend($friend);
+        $friendRequestToRemoveFromFriend = $friend->removeFriend($user);
+
+        if ($friendRequestToRemove) {
+            $entityManager->remove($friendRequestToRemove);
+        }
+        if ($friendRequestToRemoveFromFriend) {
+            $entityManager->remove($friendRequestToRemoveFromFriend);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_friends_list');
     }
 
     #[Route(path: '/user/friends/requests/{id}/accept', name: 'app_user_friends_requests_accept', methods: ['POST'])]
@@ -125,6 +169,24 @@ class UserFriendsController extends AbstractController
         $friendRequest->setAccepted(true);
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_user_friends_list');
+        return $this->redirectToRoute('app_user_friends_requests');
+    }
+
+    #[Route(path: '/user/friends/requests/{id}/decline', name: 'app_user_friends_requests_decline', methods: ['POST'])]
+    public function declineFriendRequest(EntityManagerInterface $entityManager, int $id): Response
+    {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $friendRequest = $entityManager->getRepository(FriendsRequest::class)->find($id);
+        if (!$friendRequest) {
+            throw $this->createNotFoundException('La demande d\'ami n\'existe pas.');
+        }
+
+        $entityManager->remove($friendRequest);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_user_friends_requests');
     }
 }

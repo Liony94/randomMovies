@@ -53,6 +53,15 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ;
     }
 
+    public function findReceivedFriendRequests(User $user) {
+        return $this->createQueryBuilder('fr')
+            ->where('fr.receiver = :user')
+            ->andWhere('fr.accepted = false')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function searchUsersByName(string $query): array
     {
         $qb = $this->createQueryBuilder('u');
