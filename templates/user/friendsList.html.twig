@@ -9,14 +9,19 @@
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
             {% for friend in friends %}
-                <a href="{{ path('app_user_profile_id', {'id': friend.id}) }}" class="w-full bg-white rounded-lg p-12 flex flex-col justify-center items-center shadow-md hover:shadow-xl transition-shadow duration-300">
-                    <div class="mb-8">
-                        <img class="object-center object-cover rounded-full h-36 w-36" src="{{ friend.getProfileImage() }}" alt="photo">
+                <div class="w-full rounded-lg p-12 flex flex-col justify-center items-center shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <a href="{{ path('app_user_profile_id', {'id': friend.id}) }}" class="flex flex-col justify-center items-center">
+                        <div class="mb-8">
+                            <img class="object-center object-cover rounded-full h-36 w-36" src="{{ friend.getProfileImage() }}" alt="photo">
+                        </div>
+                        <div class="text-center">
+                            <p class="darkModeTextWhite text-xl text-gray-700 font-bold mb-2">{{ friend.username }}</p>
+                        </div>
+                    </a>
+                    <div class="mt-4">
+                        <a href="{{ path('app_user_match', {'id': friend.id}) }}" class="text-sm font-medium">Match</a>
                     </div>
-                    <div class="text-center">
-                        <p class="text-xl text-gray-700 font-bold mb-2">{{ friend.username }}</p>
-                    </div>
-                </a>
+                </div>
             {% endfor %}
         </div>
     </section>

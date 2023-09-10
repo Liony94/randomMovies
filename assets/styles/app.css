@@ -55,6 +55,10 @@ body::-webkit-scrollbar {
     color: white;
 }
 
+.dark-mode .darkModeTextBlack {
+    color: black;
+}
+
 .dark-mode .darkThemeBlueWhite {
     background: #141E30;
     background: -webkit-linear-gradient(to right, #243B55, #141E30);

@@ -103,6 +103,30 @@ class UserProfileController extends AbstractController
         ]);
     }
 
+    #[Route('/user/match/{id}', name: 'app_user_match')]
+    public function match($id, EntityManagerInterface $entityManager): Response
+    {
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('Cet utilisateur n\'existe pas.');
+        }
+
+        $currentUser = $this->getUser();
+        if (!$currentUser instanceof User) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $matchedMovies = $user->getMatchedMoviesWith($currentUser);
+        $matchedSeries = $user->getMatchedSeriesWith($currentUser);
+
+        return $this->render('user/match.html.twig', [
+            'user' => $user,
+            'matchedMovies' => $matchedMovies,
+            'matchedSeries' => $matchedSeries,
+        ]);
+    }
+
     private function areFriends(User $user1, User $user2): bool
     {
         return $user1->getFriends()->contains($user2) || $user2->getFriends()->contains($user1);
