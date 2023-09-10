@@ -5,16 +5,16 @@
 {% block body %}
     <div class="container mx-auto p-4">
         <!-- Profile Header -->
-        <div class="bg-gradient-to-r from-cyan-600 via-cyan-400 to-purple-300 p-4 rounded-lg shadow-lg flex flex-col md:flex-row items-center mb-4">
+        <div class="p-4 rounded-lg shadow-lg flex flex-col md:flex-row items-center mb-4">
             <!-- User Info -->
             <div class="flex flex-col items-center mb-4 md:mb-0 md:flex-row">
-                <img class="h-24 w-24 rounded-full border-4 border-white mb-2 mx-auto md:mx-0" src="{{ app.user.profileImage }}" alt="User Image">
+                <img class="imgBorder h-24 w-24 rounded-full border-4 mb-2 mx-auto md:mx-0" src="{{ app.user.profileImage }}" alt="User Image">
                 <div class="text-center md:text-left ml-0 md:ml-4 text-white">
                     <h1 class="text-2xl font-bold">{{ app.user.username }}</h1>
                     <p>25, New York</p>
                 </div>
                 <div class="mt-2 md:mt-0 md:ml-4 text-center md:text-left">
-                    <button class="bg-blue-500 text-white p-2 rounded-lg">Modifier le profil</button>
+                    <button class="mybutton p-2 rounded-lg">Modifier le profil</button>
                     <a href="{{ path('app_logout') }}" class="bg-red-500 text-white p-2 rounded-lg ml-2">Se déconnecter</a>
                 </div>
             </div>
@@ -40,36 +40,36 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Last liked movie -->
-            <div class="bg-white p-4 rounded-lg shadow-2xl hover:shadow-none transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
+            <div class="p-4 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
                 <h3 class="text-xl font-semibold mb-4 text-center">Dernier film aimé</h3>
                 {% if lastLikedMovie is defined and lastLikedMovie is not empty %}
                     <img src="https://image.tmdb.org/t/p/w300{{ lastLikedMovie.posterPath }}" alt="{{ lastLikedMovie.title }}" class="rounded mb-2">
-                    <p class="text-gray-700 text-center">{{ lastLikedMovie.title }}</p>
+                    <p class="text-center">{{ lastLikedMovie.title }}</p>
                 {% else %}
-                    <p class="text-gray-700 text-center">Aucun film aimé pour le moment.</p>
+                    <p class="text-center">Aucun film aimé pour le moment.</p>
                 {% endif %}
-                <button class="bg-blue-500 text-white p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
+                <button class="mybutton p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>
 
             <!-- Last liked series -->
-            <div class="bg-white p-4 rounded-lg shadow-2xl hover:shadow-none transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
+            <div class="p-4 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
                 <h3 class="text-xl font-semibold mb-4 text-center">Dernière série aimée</h3>
                 {% if lastLikedSerie is defined and lastLikedSerie is not empty %}
                     <img src="https://image.tmdb.org/t/p/w300{{ lastLikedSerie.posterPath }}" alt="{{ lastLikedSerie.title }}" class="rounded mb-2">
-                    <p class="text-gray-700 text-center">{{ lastLikedSerie.title }}</p>
+                    <p class="text-center">{{ lastLikedSerie.title }}</p>
                 {% else %}
-                    <p class="text-gray-700 text-center">Aucune série aimée pour le moment.</p>
+                    <p class="text-center">Aucune série aimée pour le moment.</p>
                 {% endif %}
-                <button class="bg-blue-500 text-white p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
+                <button class="mybutton p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>
 
             <!-- Last liked animes -->
-            <div class="bg-white p-4 rounded-lg shadow-2xl hover:shadow-none transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
+            <div class="p-4 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
                 <h3 class="text-xl font-semibold mb-4 text-center">Liste d'amis</h3>
                 {% for friend in friends %}
                     <p>{{ friend.username }}</p>
                 {% endfor %}
-                <button class="bg-blue-500 text-white p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
+                <button class="mybutton p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>
         </div>
 

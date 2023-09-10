@@ -3,12 +3,12 @@
 {% block title %}Welcome to Mov'Finder{% endblock %}
 
 {% block body %}
-    <div class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white min-h-screen">
+    <div class="min-h-screen">
         <div class="container mx-auto p-4">
             <div class="text-center py-16">
                 <h1 class="text-5xl font-extrabold mb-4 animate__animated animate__fadeIn">Welcome to Mov'Finder</h1>
                 <p class="text-2xl mb-8">Swipe tes films/séries préférés et compare tes likes avec tes amis !</p>
-                <a href="{{ path('app_find_movie') }}" class="text-white bg-blue-500 px-8 py-2 rounded-full text-lg">C'est parti</a>
+                <a href="{{ path('app_find_movie') }}" class="mybutton px-8 py-2 rounded-full text-lg">C'est parti</a>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 text-center py-16">

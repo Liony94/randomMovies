@@ -55,6 +55,7 @@ class FindMovieController extends AbstractController
     {
         $user = $this->getUser();
         $movie = $this->findOrCreateMovie($movieDbId, $em);
+        $matchedUsers = [];
 
         if (null === $user || null === $movie) {
             return new JsonResponse(['status' => 'error']);
@@ -62,9 +63,17 @@ class FindMovieController extends AbstractController
 
         if ($user instanceof User) {
             $this->updateUserAction($type, $user, $movie, $em);
+
+            if ('like' === $type) {
+                foreach ($user->getFriends() as $friend) {
+                    if ($friend->hasLikedMovie($movie)) {
+                        $matchedUsers[] = $friend->getUsername();
+                    }
+                }
+            }
         }
 
-        return new JsonResponse(['status' => 'success']);
+        return new JsonResponse(['status' => 'success', 'matched_users' => $matchedUsers]);
     }
 
     #[Route('/random_movie', name: 'app_random_movie')]

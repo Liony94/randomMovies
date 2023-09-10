@@ -148,6 +148,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->watchedMovies;
     }
 
+    public function hasLikedMovie(Movie $movie): bool
+    {
+        return $this->watchedMovies->contains($movie);
+    }
+
     public function addWatchedMovie(Movie $watchedMovie): static
     {
         if (!$this->watchedMovies->contains($watchedMovie)) {
@@ -271,6 +276,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getAcceptedFriends(): Collection
+    {
+        $friends = new ArrayCollection();
+
+        foreach ($this->receivedFriendRequests as $friendRequest) {
+            if ($friendRequest->isAccepted()) {
+                $friends->add($friendRequest->getSender());
+            }
+        }
+
+        foreach ($this->sentFriendRequests as $friendRequest) {
+            if ($friendRequest->isAccepted()) {
+                $friends->add($friendRequest->getReceiver());
+            }
+        }
+
+        return $friends;
     }
 
     public function getUsername(): ?string
