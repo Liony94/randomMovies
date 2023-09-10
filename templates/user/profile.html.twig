@@ -63,11 +63,27 @@
                 <button class="mybutton p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>
 
-            <!-- Last liked animes -->
             <div class="p-4 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
-                <h3 class="text-xl font-semibold mb-4 text-center">Liste d'amis</h3>
-                {% for friend in friends %}
-                    <p>{{ friend.username }}</p>
+                <h3 class="text-xl font-semibold mb-4 text-center">Mes Matches</h3>
+
+                {% for match in threeLastMatches %}
+                    <div class="mb-4 p-2 rubanFilm w-full rounded-lg">
+                        <div class="flex items-center">
+                            <span class="text-xl mr-2">{{ match.friend.username }}</span>
+                            <i class="fas fa-heart text-red-500"></i>
+                        </div>
+                        <div class="ml-4 mt-2 p-1 rounded-full inline-flex items-center">
+                            {% if match.type == 'movie' %}
+                                <!-- C'est un film -->
+                                <img src="https://image.tmdb.org/t/p/w300{{ match.data.posterPath }}" alt="{{ match.data.title }}" class="rounded mb-2 w-16 h-16 object-cover">
+                                <span class="text-sm ml-2">{{ match.data.title }}</span>
+                            {% elseif match.type == 'serie' %}
+                                <!-- C'est une série -->
+                                <img src="https://image.tmdb.org/t/p/w300{{ match.data.posterPath }}" alt="{{ match.data.title }}" class="rounded mb-2 w-16 h-16 object-cover">
+                                <span class="text-sm ml-2">{{ match.data.title }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
                 {% endfor %}
                 <button class="mybutton p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>

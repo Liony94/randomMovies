@@ -38,6 +38,9 @@ class Serie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $trailerUrl = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $likedAt = null;
+
     public function __construct()
     {
         $this->watchedByUsers = new ArrayCollection();
@@ -153,6 +156,18 @@ class Serie
     public function setTrailerUrl(?string $trailerUrl): static
     {
         $this->trailerUrl = $trailerUrl;
+
+        return $this;
+    }
+
+    public function getLikedAt(): ?\DateTimeInterface
+    {
+        return $this->likedAt;
+    }
+
+    public function setLikedAt(?\DateTimeInterface $likedAt): static
+    {
+        $this->likedAt = $likedAt;
 
         return $this;
     }

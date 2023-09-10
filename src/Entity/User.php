@@ -148,6 +148,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->watchedMovies;
     }
 
+    public function getMatchedMoviesWith(User $friend): array
+    {
+        $matchedMovies = [];
+        foreach ($this->getWatchedMovies() as $movie) {
+            if ($friend->hasLikedMovie($movie)) {
+                $matchedMovies[] = $movie;
+            }
+        }
+        return $matchedMovies;
+    }
+
     public function hasLikedMovie(Movie $movie): bool
     {
         return $this->watchedMovies->contains($movie);
@@ -339,6 +350,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getSeries(): Collection
     {
         return $this->series;
+    }
+
+    public function getMatchedSeriesWith(User $friend): array
+    {
+        $matchedSeries = [];
+        foreach ($this->getSeries() as $serie) {
+            if ($friend->hasLikedSerie($serie)) {
+                $matchedSeries[] = $serie;
+            }
+        }
+        return $matchedSeries;
     }
 
     public function hasLikedSerie(Serie $serie): bool

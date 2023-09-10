@@ -38,6 +38,9 @@ class Movie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $trailerUrl = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $likeAt = null;
+
 
     public function __construct()
     {
@@ -154,6 +157,18 @@ class Movie
     public function setTrailerUrl(?string $trailerUrl): static
     {
         $this->trailerUrl = $trailerUrl;
+
+        return $this;
+    }
+
+    public function getLikeAt(): ?\DateTimeInterface
+    {
+        return $this->likeAt;
+    }
+
+    public function setLikeAt(?\DateTimeInterface $likeAt): static
+    {
+        $this->likeAt = $likeAt;
 
         return $this;
     }

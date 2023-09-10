@@ -29,6 +29,31 @@ class UserProfileController extends AbstractController
         $friends = $user->getFriends();
         $numberOfFriends = count($friends);
 
+        $allMatches = [];
+        foreach ($friends as $friend) {
+            $matchedMovies = $user->getMatchedMoviesWith($friend);
+            $matchedSeries = $user->getMatchedSeriesWith($friend);
+
+            foreach ($matchedMovies as $movie) {
+                $allMatches[] = ['type' => 'movie', 'data' => $movie, 'friend' => $friend, 'likedAt' => $movie->getLikeAt()];
+            }
+
+            foreach ($matchedSeries as $serie) {
+                $allMatches[] = ['type' => 'serie', 'data' => $serie, 'friend' => $friend, 'likedAt' => $serie->getLikedAt()];
+            }
+        }
+
+        if (count($allMatches) >= 3) {
+            $randomKeys = array_rand($allMatches, 3);
+            $threeRandomMatches = [
+                $allMatches[$randomKeys[0]],
+                $allMatches[$randomKeys[1]],
+                $allMatches[$randomKeys[2]]
+            ];
+        } else {
+            $threeRandomMatches = $allMatches;
+        }
+
         return $this->render('user/profile.html.twig', [
             'user' => $user,
             'userWatchedMovies' => $userWatchedMovies,
@@ -37,7 +62,8 @@ class UserProfileController extends AbstractController
             'numberOfLikedMovies' => $numberOfLikedMovies,
             'numberOfLikedSeries' => $numberOfLikedSeries,
             'friends' => $friends,
-            'numberOfFriends' => $numberOfFriends
+            'numberOfFriends' => $numberOfFriends,
+            'threeLastMatches' => $threeRandomMatches,
         ]);
     }
 
