@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html id="root">
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
@@ -7,6 +7,46 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                function enableDarkMode() {
+                    document.documentElement.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'enabled');
+                }
+
+                function disableDarkMode() {
+                    document.documentElement.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', 'disabled');
+                }
+
+                function toggleDarkTheme() {
+                    if (localStorage.getItem('darkMode') !== 'enabled') {
+                        enableDarkMode();
+                    } else {
+                        disableDarkMode();
+                    }
+                }
+
+                if (localStorage.getItem('darkMode') === 'enabled') {
+                    enableDarkMode();
+                }
+
+                // Ecouteur d'événement pour la case à cocher
+                const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+                if (darkModeToggle) {
+                    darkModeToggle.addEventListener('change', function() {
+                        toggleDarkTheme();
+                        // Ajoutez ici toute animation ou effet visuel supplémentaire si nécessaire
+                    });
+
+                    // Initialisation de la case à cocher
+                    if (localStorage.getItem('darkMode') === 'enabled') {
+                        darkModeToggle.checked = true;
+                    }
+                }
+            });
+        </script>
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
         {% endblock %}
@@ -19,6 +59,7 @@
         {{ include('./partials/nav.html.twig') }}
     </header>
     <body>
-        {% block body %}{% endblock %}
+    {% block body %}
+    {% endblock %}
     </body>
 </html>

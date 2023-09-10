@@ -31,6 +31,8 @@
                         <p>{{ numberOfLikedMovies }}</p>
                         <p class="title">Séries</p>
                         <p>{{ numberOfLikedSeries }}</p>
+                        <p class="title">Amis</p>
+                        <p>{{ numberOfFriends }}</p>
                     </div>
                 </div>
             </div>
@@ -64,6 +66,9 @@
             <!-- Last liked animes -->
             <div class="bg-white p-4 rounded-lg shadow-2xl hover:shadow-none transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
                 <h3 class="text-xl font-semibold mb-4 text-center">Liste d'amis</h3>
+                {% for friend in friends %}
+                    <p>{{ friend.username }}</p>
+                {% endfor %}
                 <button class="bg-blue-500 text-white p-2 rounded-lg mt-4 hover:bg-blue-600 transition duration-200">Voir plus</button>
             </div>
         </div>

@@ -81,7 +81,7 @@ class FindMovieController extends AbstractController
 
     private function fetchMoviesFromEndpoints(): array
     {
-        $endpoints = ['popular', 'now_playing', 'top_rated', 'upcoming'];
+        $endpoints = ['popular', 'now_playing', 'top_rated'];
         $allMovies = [];
 
         foreach ($endpoints as $endpoint) {

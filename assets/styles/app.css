@@ -2,16 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    background-color: #00DBDE;
-    background-image: linear-gradient(57deg, #00DBDE 0%, #FC00FF 100%);
-    -ms-overflow-style: none;
-}
+/*body {*/
+/*    background-color: #00DBDE;*/
+/*    background-image: linear-gradient(57deg, #00DBDE 0%, #FC00FF 100%);*/
+/*    -ms-overflow-style: none;*/
+/*}*/
 
 body::-webkit-scrollbar {
     display: none;
 }
 
+.dark-mode {
+    background: #141E30;
+    background: -webkit-linear-gradient(to right, #243B55, #141E30);
+    background: linear-gradient(to right, #243B55, #141E30);
+    color: white;
+}
+
+.dark-mode a {
+    color: white;
+}
+
+.dark-mode .darkModeTextWhite {
+    color: white;
+}
+
+.dark-mode .darkThemeBlueWhite {
+    background: #141E30;
+    background: -webkit-linear-gradient(to right, #243B55, #141E30);
+    background: linear-gradient(to right, #243B55, #141E30);
+    color: white;
+}
+
+.dark-mode .antialiased {
+    background-color: #1a202c;  /* Couleur de fond pour la barre de navigation en mode sombre */
+}
+
+.dark-mode .darkModeBlue  {
+    background: #141E30;
+    background: -webkit-linear-gradient(to right, #243B55, #141E30);
+    background: linear-gradient(to right, #243B55, #141E30);
+}
+
+.dark-mode .darkModeBlueShadow {
+    background: #141E30;
+    background: -webkit-linear-gradient(to right, #243B55, #141E30);
+    background: linear-gradient(to right, #243B55, #141E30);
+    border: 1px solid #2C3E50;
+    box-shadow: 0px 4px 6px #0E1622;
+}
+
+
+.dark-mode .darkPass:hover {
+    background-color: #424d72;
+    color: white;
+}
 
 .border-pastel-green {
     border-color: #77dd77;
@@ -52,13 +97,28 @@ body::-webkit-scrollbar {
 }
 
 .modal-buton {
-    background: rgb(238,174,202);
-    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+    background: #000000;
+    background: -webkit-linear-gradient(to right, #434343, #000000);
+    background: linear-gradient(to right, #434343, #000000);
+
 }
 
 .modal-buton:hover {
-    background: rgb(239, 123, 181);
-    background: radial-gradient(circle, rgb(241, 133, 179) 0%, rgb(116, 173, 241) 100%);
+    background: #000000;
+    background: -webkit-linear-gradient(to right, #434343, #676870);
+    background: linear-gradient(to right, #434343, #676870);
+}
+
+.dark-mode .modal-buton {
+    background: #4B79A1;
+    background: -webkit-linear-gradient(to right, #283E51, #4B79A1);
+    background: linear-gradient(to right, #283E51, #4B79A1);
+}
+
+.dark-mode .modal-buton:hover {
+    background: #28628d;
+    background: -webkit-linear-gradient(to right, #283E51, #28628d);
+    background: linear-gradient(to right, #283E51, #28628d);
 }
 
 .rate {
@@ -129,13 +189,13 @@ body::-webkit-scrollbar {
 }
 
 .login-box button:hover {
-    background: #b252e5;
+    background: #30537e;
     color: #fff;
     border-radius: 5px;
-    box-shadow: 0 0 5px #b252e5,
-    0 0 25px #b252e5,
-    0 0 50px #b252e5,
-    0 0 100px #b252e5;
+    box-shadow: 0 0 5px #30537e,
+    0 0 25px #30537e,
+    0 0 50px #30537e,
+    0 0 100px #30537e;
 }
 
 .login-box button span {
@@ -158,7 +218,105 @@ body::-webkit-scrollbar {
     left: -100%;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #b252e5);
+    background: linear-gradient(90deg, transparent, #30537e);
+    animation: btn-anim1 2s linear infinite;
+}
+
+.dark-mode .login-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    padding: 40px;
+    transform: translate(-50%, -50%);
+    background: #141E30;
+    background: -webkit-linear-gradient(to right, #243B55, #141E30);
+    background: linear-gradient(to right, #243B55, #141E30);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+}
+
+.dark-mode .login-box .user-box {
+    position: relative;
+}
+
+.dark-mode .login-box .user-box input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #ffffff;
+    margin-bottom: 30px;
+    border: none;
+    border-bottom: 1px solid #ffffff;
+    outline: none;
+    background: transparent;
+}
+
+.dark-mode .login-box .user-box label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: #ffffff;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.dark-mode .login-box .user-box input:focus ~ label,
+.dark-mode .login-box .user-box input:valid ~ label {
+    top: -20px;
+    left: 0;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.dark-mode .login-box form button {
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    color: #ffffff;
+    font-size: 16px;
+    text-decoration: none;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: .5s;
+    margin-top: 40px;
+    letter-spacing: 4px
+}
+
+.dark-mode .login-box button:hover {
+    background: #ffffff;
+    color: #243B55;
+    border-radius: 5px;
+    box-shadow: 0 0 5px #ffffff,
+    0 0 25px #ffffff,
+    0 0 50px #ffffff,
+    0 0 100px #ffffff;
+}
+
+.dark-mode .login-box button span {
+    position: absolute;
+    display: block;
+}
+
+@keyframes btn-anim1 {
+    0% {
+        left: -100%;
+    }
+
+    50%,100% {
+        left: 100%;
+    }
+}
+
+.dark-mode .login-box button span:nth-child(1) {
+    bottom: 2px;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffffff);
     animation: btn-anim1 2s linear infinite;
 }
 
@@ -249,4 +407,90 @@ body::-webkit-scrollbar {
     100% {
         opacity: 0.3;
     }
+}
+
+/*bouton dark mode*/
+
+.toggle-checkbox {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.toggle-slot {
+    font-size: 10px;
+    position: relative;
+    height: 3.5em;
+    width: 7em;
+    border: 0px solid transparent;
+    border-radius: 10em;
+    background-color: #c7cedc;
+    transition: background-color 250ms;
+}
+
+.toggle-checkbox:checked ~ .toggle-slot {
+    background-color: #374151;
+}
+
+.toggle-button {
+    transform: translate(0.3em, 0.25em);
+    position: absolute;
+    height: 3em;
+    width: 3em;
+    border-radius: 50%;
+    background-color: #ffffff;
+    box-shadow: inset 0px 0px 0px 0.75em #243B55;
+    transition: background-color 250ms, border-color 250ms, transform 500ms cubic-bezier(.26,2,.46,.71);
+}
+
+.toggle-checkbox:checked ~ .toggle-slot .toggle-button {
+    background-color: #485367;
+    box-shadow: inset 0px 0px 0px 0.75em white;
+    transform: translate(3.65em, 0.25em);
+}
+
+.sun-icon {
+    position: absolute;
+    height: 6em;
+    width: 6em;
+    color: #ffbb52;
+}
+
+.sun-icon-wrapper {
+    position: absolute;
+    height: 6em;
+    width: 6em;
+    opacity: 1;
+    transform: translate(2em, 2em) rotate(15deg);
+    transform-origin: 50% 50%;
+    transition: opacity 150ms, transform 500ms cubic-bezier(.26,2,.46,.71);
+}
+
+.toggle-checkbox:checked ~ .toggle-slot .sun-icon-wrapper {
+    opacity: 0;
+    transform: translate(3em, 2em) rotate(0deg);
+}
+
+.moon-icon {
+    position: absolute;
+    height: 6em;
+    width: 6em;
+    color: white;
+}
+
+.moon-icon-wrapper {
+    position: absolute;
+    height: 6em;
+    width: 6em;
+    opacity: 0;
+    transform: translate(11em, 2em) rotate(0deg);
+    transform-origin: 50% 50%;
+    transition: opacity 150ms, transform 500ms cubic-bezier(.26,2.5,.46,.71);
+}
+
+.toggle-checkbox:checked ~ .toggle-slot .moon-icon-wrapper {
+    opacity: 1;
+    transform: translate(2em, 2em) rotate(-15deg);
 }

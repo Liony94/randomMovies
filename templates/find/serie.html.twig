@@ -1,38 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        body {
-            background-color: #FA8BFF;
-            background-image: linear-gradient(45deg, #FA8BFF 0%, #2BD2FF 52%, #2BFF88 90%);
-        }
-    </style>
-{% endblock %}
+{% block title %}Mov'Finder | Séries {% endblock %}
 
 {% block body %}
 
     <div class="flex justify-center items-center min-h-screen px-4 sm:px-0">
         <div class="relative">
-            <div class="absolute inset-0 transform translate-x-4 translate-y-4 bg-white rounded-xl shadow-lg"></div>
-            <div class="absolute inset-0 transform translate-x-2 translate-y-2 bg-white rounded-xl shadow-lg"></div>
+            <div class="darkModeBlueShadow absolute inset-0 transform translate-x-4 -translate-y-16 bg-white rounded-xl shadow-lg"></div>
+            <div class="darkModeBlueShadow absolute inset-0 transform translate-x-2 -translate-y-16 bg-white rounded-xl shadow-lg"></div>
 
-            <div class="card w-full sm:w-[420px] p-4 bg-white rounded-xl shadow-lg transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-105 z-10 min-h-[600px] max-h-[600px]">
-                <img id="serie-image" class="w-full h-96 rounded-t-xl object-cover object-center mb-[-4px]" src="https://image.tmdb.org/t/p/w500{{ serie.poster_path }}" alt="{{ serie.name }}">
+            <div class="darkModeBlue -translate-y-16 card w-full sm:w-[420px] p-4 bg-white rounded-xl shadow-lg transition duration-500 ease-in-out transform hover:scale-105 z-10 min-h-[600px] max-h-[600px]">
+                <div id="see-more-button">
+                    <img id="serie-image" class="w-full h-96 rounded-t-xl object-cover object-center mb-[-4px]" src="https://image.tmdb.org/t/p/w500{{ serie.poster_path }}" alt="{{ serie.name }}">
+                </div>
 
                 <!-- Content -->
                 <div class="p-4 pt-6">
                     <div class="flex justify-between items-center">
-                        <h1 id="serie-title" class="text-2xl font-semibold mb-1 text-gray-800">
+                        <h1 id="serie-title" class="darkModeTextWhite text-2xl font-semibold mb-1 text-gray-800 text-center w-full">
                             {{ serie.name }}
                         </h1>
-                        <span id="serie-rating" class="bg-gray-200 border-2 text-blue-500 border-blue-500 w-10 h-10 flex items-center justify-center rounded-full">
-                            {{ serie.vote_average }}
-                        </span>
                     </div>
-                    <button id="see-more-button" class="text-base text-center w-full modal-buton text-white px-4 py-2 rounded-lg m-2">
-                        Voir plus
-                    </button>
                     <!-- Actions -->
                     <div class="flex justify-center mt-2">
                         <button id="dislike-button" class="text-2xl p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300 ease-in-out mx-2">
@@ -49,8 +37,9 @@
 
     <div id="details-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300 ease-in-out">
         <div class="bg-black bg-opacity-50 absolute inset-0"></div>
-        <div class="bg-white p-8 rounded-lg w-full max-w-md z-10 relative shadow-lg transition-transform transform duration-300 ease-in-out scale-95">
-            <h1 id="details-title" class="text-3xl mb-4 font-semibold text-gray-800"></h1>
+        <div class="darkThemeBlueWhite bg-white p-8 rounded-lg w-full max-w-md z-10 relative shadow-lg transition-transform transform duration-300 ease-in-out scale-95">
+            <h1 id="details-title" class="darkModeTextWhite text-3xl mb-4 font-semibold text-gray-800 text-center w-full"></h1>
+
             <div id="serie-categories" class="flex flex-wrap justify-center mt-3">
                 {% for genre_id in serie.genre_ids %}
                     <span class="text-white text-sm font-semibold py-1 px-2 mr-2 mb-2 rounded-full modal-buton">
@@ -58,10 +47,13 @@
                     </span>
                 {% endfor %}
             </div>
-            <div id="details-release-date" class="text-lg mb-2 text-gray-700"></div>
-            <div id="details-description" class="text-base mb-4 text-gray-600"></div>
-            <iframe id="details-trailer" class="hidden" width="330" height="300" frameborder="0" allowfullscreen></iframe>
-            <button id="close-details-modal" class="modal-buton mt-6 text-white px-6 py-2 rounded-lg transition duration-200 ease-in-out">
+            <div id="details-release-date" class="darkModeTextWhite text-lg mb-2 text-gray-700 text-center"></div>
+            <div class="h-px bg-gray-300 my-4 mx-2"></div>
+            <div id="details-description" class="darkModeTextWhite text-base mb-4 text-gray-600"></div>
+            <div class="flex justify-center items-center">
+                <iframe id="details-trailer" class="hidden w-full h-[calc(100%-8)] m-4" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <button id="close-details-modal" class="modal-buton mt-6 text-white px-6 py-2 rounded-lg transition duration-200 ease-in-out text-center w-full">
                 Fermer
             </button>
         </div>
@@ -185,7 +177,6 @@
             function updateCard(serie) {
                 const genres = {{ genres|json_encode|raw }};
                 document.querySelector('#serie-title').textContent = serie.name;
-                document.querySelector('#serie-rating').textContent = serie.vote_average;
                 document.querySelector('#serie-image').src = `https://image.tmdb.org/t/p/w500${serie.poster_path}`;
                 serieId = serie.id;
 
@@ -226,7 +217,7 @@
 
             function showDetailsModal(serie) {
                 const detailsModal = document.querySelector('#details-modal');
-                document.querySelector('#details-title').textContent = serie.title;
+                document.querySelector('#details-title').textContent = serie.name;
                 document.querySelector('#details-release-date').textContent = "Date de sortie : " + serie.first_air_date;
                 document.querySelector('#details-description').textContent = serie.overview;
 
