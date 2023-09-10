@@ -87,6 +87,29 @@ class UserProfileController extends AbstractController
         $lastLikedMovie = $userWatchedMovies->last();
         $numberOfLikedMovies = count($user->getWatchedMovies());
         $numberOfLikedSeries = count($user->getSeries());
+        $matchedMovies = $user->getMatchedMoviesWith($currentUser);
+        $matchedSeries = $user->getMatchedSeriesWith($currentUser);
+
+        $matchesWithUser = [];
+        foreach ($matchedMovies as $movie) {
+            $matchesWithUser[] = ['type' => 'movie', 'data' => $movie, 'likedAt' => $movie->getLikeAt()];
+        }
+
+        foreach ($matchedSeries as $serie) {
+            $matchesWithUser[] = ['type' => 'serie', 'data' => $serie, 'likedAt' => $serie->getLikedAt()];
+        }
+
+        if (count($matchesWithUser) >= 4) {
+            $randomKeys = array_rand($matchesWithUser, 4);
+            $threeRandomMatches = [
+                $matchesWithUser[$randomKeys[0]],
+                $matchesWithUser[$randomKeys[1]],
+                $matchesWithUser[$randomKeys[2]],
+                $matchesWithUser[$randomKeys[3]]
+            ];
+        } else {
+            $threeRandomMatches = $matchesWithUser;
+        }
 
         $friends = $user->getFriends();
         $numberOfFriends = count($user->getFriends());
@@ -101,6 +124,7 @@ class UserProfileController extends AbstractController
             'numberOfLikedMovies' => $numberOfLikedMovies,
             'numberOfLikedSeries' => $numberOfLikedSeries,
             'friends' => $friends,
+            'matchesWithUser' => $threeRandomMatches,
         ]);
     }
 //    #[Route('/user/match', name: 'app_user_my_match')]
@@ -143,7 +167,7 @@ class UserProfileController extends AbstractController
         return $this->render('user/match.html.twig', [
             'user' => $user,
             'matchedMovies' => $matchedMovies,
-            'matchedSeries' => $matchedSeries,
+            'matchedSeries' => $matchedSeries
         ]);
     }
 
