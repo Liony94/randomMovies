@@ -43,7 +43,7 @@
             <div class="p-4 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
                 <h3 class="text-xl font-semibold mb-4 text-center">Dernier film aimé</h3>
                 {% if lastLikedMovie is defined and lastLikedMovie is not empty %}
-                    <img src="https://image.tmdb.org/t/p/w300{{ lastLikedMovie.posterPath }}" alt="{{ lastLikedMovie.title }}" class="rounded mb-2">
+                    <img src="https://image.tmdb.org/t/p/w500{{ lastLikedMovie.posterPath }}" alt="{{ lastLikedMovie.title }}" class="rounded mb-2">
                     <p class="text-center">{{ lastLikedMovie.title }}</p>
                 {% else %}
                     <p class="text-center">Aucun film aimé pour le moment.</p>
@@ -55,7 +55,7 @@
             <div class="p-4 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 flex flex-col items-center justify-center">
                 <h3 class="text-xl font-semibold mb-4 text-center">Dernière série aimée</h3>
                 {% if lastLikedSerie is defined and lastLikedSerie is not empty %}
-                    <img src="https://image.tmdb.org/t/p/w300{{ lastLikedSerie.posterPath }}" alt="{{ lastLikedSerie.title }}" class="rounded mb-2">
+                    <img src="https://image.tmdb.org/t/p/w500{{ lastLikedSerie.posterPath }}" alt="{{ lastLikedSerie.title }}" class="rounded mb-2">
                     <p class="text-center">{{ lastLikedSerie.title }}</p>
                 {% else %}
                     <p class="text-center">Aucune série aimée pour le moment.</p>
@@ -75,11 +75,11 @@
                         <div class="ml-4 mt-2 p-1 rounded-full inline-flex items-center">
                             {% if match.type == 'movie' %}
                                 <!-- C'est un film -->
-                                <img src="https://image.tmdb.org/t/p/w300{{ match.data.posterPath }}" alt="{{ match.data.title }}" class="rounded mb-2 w-16 h-16 object-cover">
+                                <img src="https://image.tmdb.org/t/p/w500{{ match.data.posterPath }}" alt="{{ match.data.title }}" class="rounded mb-2 w-16 h-16 object-cover">
                                 <span class="text-sm ml-2">{{ match.data.title }}</span>
                             {% elseif match.type == 'serie' %}
                                 <!-- C'est une série -->
-                                <img src="https://image.tmdb.org/t/p/w300{{ match.data.posterPath }}" alt="{{ match.data.title }}" class="rounded mb-2 w-16 h-16 object-cover">
+                                <img src="https://image.tmdb.org/t/p/w500{{ match.data.posterPath }}" alt="{{ match.data.title }}" class="rounded mb-2 w-16 h-16 object-cover">
                                 <span class="text-sm ml-2">{{ match.data.title }}</span>
                             {% endif %}
                         </div>

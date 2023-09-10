@@ -43,12 +43,13 @@ class UserProfileController extends AbstractController
             }
         }
 
-        if (count($allMatches) >= 3) {
-            $randomKeys = array_rand($allMatches, 3);
+        if (count($allMatches) >= 4) {
+            $randomKeys = array_rand($allMatches, 4);
             $threeRandomMatches = [
                 $allMatches[$randomKeys[0]],
                 $allMatches[$randomKeys[1]],
-                $allMatches[$randomKeys[2]]
+                $allMatches[$randomKeys[2]],
+                $allMatches[$randomKeys[3]]
             ];
         } else {
             $threeRandomMatches = $allMatches;
@@ -102,6 +103,25 @@ class UserProfileController extends AbstractController
             'friends' => $friends,
         ]);
     }
+//    #[Route('/user/match', name: 'app_user_my_match')]
+//    public function myMatch(): Response
+//    {
+//        $user = $this->getUser();
+//        if (!$user instanceof User) {
+//            return $this->redirectToRoute('app_login');
+//        }
+//
+//        $friends = $user->getFriends();
+//
+//        $matchedMovies = $user->getMatchedMoviesWith($friends);
+//        $matchedSeries = $user->getMatchedSeriesWith($friends);
+//
+//        return $this->render('user/my_match.html.twig', [
+//            'user' => $user,
+//            'myMatchedMovies' => $matchedMovies,
+//            'myMatchedSeries' => $matchedSeries,
+//        ]);
+//    }
 
     #[Route('/user/match/{id}', name: 'app_user_match')]
     public function match($id, EntityManagerInterface $entityManager): Response
