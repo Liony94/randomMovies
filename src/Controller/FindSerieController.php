@@ -108,7 +108,6 @@ class FindSerieController extends AbstractController
             $this->currentPage = $this->lastPage + 1;
             $this->lastPage += 3;
         }
-//        dd($allSeries);
 
         return $allSeries;
     }

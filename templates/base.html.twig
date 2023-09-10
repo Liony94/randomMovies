@@ -32,16 +32,13 @@
                     enableDarkMode();
                 }
 
-                // Ecouteur d'événement pour la case à cocher
                 const darkModeToggle = document.getElementById('dark-mode-toggle');
 
                 if (darkModeToggle) {
                     darkModeToggle.addEventListener('change', function() {
                         toggleDarkTheme();
-                        // Ajoutez ici toute animation ou effet visuel supplémentaire si nécessaire
                     });
 
-                    // Initialisation de la case à cocher
                     if (localStorage.getItem('darkMode') === 'enabled') {
                         darkModeToggle.checked = true;
                     }
