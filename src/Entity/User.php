@@ -341,6 +341,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->series;
     }
 
+    public function hasLikedSerie(Serie $serie): bool
+    {
+        return $this->series->contains($serie);
+    }
+
     public function addSeries(Serie $series): static
     {
         if (!$this->series->contains($series)) {

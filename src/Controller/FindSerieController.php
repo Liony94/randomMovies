@@ -55,6 +55,7 @@ class FindSerieController extends AbstractController
     {
         $user = $this->getUser();
         $serie = $this->findOrCreateSerie($serieDbId, $em);
+        $matchedUsers = [];
 
         if (null === $user || null === $serie) {
             return new JsonResponse(['status' => 'error']);
@@ -64,7 +65,15 @@ class FindSerieController extends AbstractController
             $this->updateUserAction($type, $user, $serie, $em);
         }
 
-        return new JsonResponse(['status' => 'success']);
+        if ('like' === $type) {
+            foreach ($user->getFriends() as $friend) {
+                if ($friend->hasLikedSerie($serie)) {
+                    $matchedUsers[] = $friend->getUsername();
+                }
+            }
+        }
+
+        return new JsonResponse(['status' => 'success', 'matched_users' => $matchedUsers]);
     }
 
     #[Route('/random_serie', name: 'app_random_serie')]

@@ -76,7 +76,26 @@
         </div>
     </div>
 
-    <script>
+    <div id="match-modal" class="fixed inset-0 flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300 ease-in-out">
+        <div class="bg-black bg-opacity-50 absolute inset-0"></div>
+        <div class="bg-white p-6 rounded-lg w-full max-w-md z-10 relative shadow-lg flex flex-col items-center">
+            <h1 class="text-gray-700 text-3xl mb-4 font-semibold text-center">
+                <i class="fas fa-heart text-red-500"></i> C'est un match !
+            </h1>
+            <p class="text-lg text-gray-700 text-center">
+                Vous et <span class="font-bold text-blue-500">[Noms des utilisateurs]</span> avez tous les deux aimé cette série !
+            </p>
+            <img src="https://media.tenor.com/3sR-NBvtKiYAAAAC/bravo-f%C3%A9licitation.gif" alt="Match Image" class="w-1/3 mt-4 rounded-full">
+            <div class="mt-6 flex justify-center w-full">
+                <button id="close-match-modal" class="bg-gray-300 hover:bg-gray-400 text-black px-6 py-2 rounded-lg transition duration-200 ease-in-out">
+                    Fermer
+                </button>
+            </div>
+        </div>
+        <canvas id="confetti-canvas"></canvas>
+    </div>
+
+    <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
             const likeButton = document.querySelector('#like-button');
             const dislikeButton = document.querySelector('#dislike-button');
@@ -109,6 +128,10 @@
                 hideLoginModal();
             });
 
+            document.querySelector('#close-match-modal').addEventListener('click', function() {
+                hideMatchModal();
+            });
+
             function showLoginModal() {
                 const loginModal = document.querySelector('#login-modal');
                 loginModal.classList.remove('hidden');
@@ -122,6 +145,37 @@
                 loginModal.style.opacity = "0";
                 setTimeout(() => {
                     loginModal.classList.add('hidden');
+                }, 300);
+            }
+
+            const canvas = document.querySelector('#confetti-canvas');
+            function showConfetti(){
+                var myConfetti = confetti.create(canvas, {
+                    resize: true,
+                    useWorker: true
+                });
+                myConfetti({
+                    particleCount: 100,
+                    spread: 160
+                });
+            }
+
+            function showMatchModal(matchedUsers) {
+                const matchModal = document.querySelector('#match-modal');
+                const matchText = `Vous et ${matchedUsers.join(', ')} avez tous les deux aimé cette série !`;
+                matchModal.querySelector('p').textContent = matchText;
+                matchModal.classList.remove('hidden');
+                setTimeout(() => {
+                    matchModal.style.opacity = "1";
+                }, 10);
+                showConfetti();
+            }
+
+            function hideMatchModal() {
+                const matchModal = document.querySelector('#match-modal');
+                matchModal.style.opacity = "0";
+                setTimeout(() => {
+                    matchModal.classList.add('hidden');
                 }, 300);
             }
 
@@ -140,6 +194,9 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.status === 'success') {
+                                if (data.matched_users && data.matched_users.length > 0) {
+                                    showMatchModal(data.matched_users);
+                                }
                                 return fetchNextSerie();
                             }
                         })
