@@ -112,30 +112,38 @@ body::-webkit-scrollbar {
     color: #77dd77;
 }
 
-@keyframes swipeRight {
-    0%, 100% {
-        transform: translateX(0);
+@keyframes swipeRightCircular {
+    0% {
+        transform: rotate(0deg) translateY(0px);
     }
     50% {
-        transform: translateX(55px);
+        transform: rotate(15deg) translateY(-20px);
+    }
+    100% {
+        transform: rotate(0deg) translateY(0px);
     }
 }
 
-@keyframes swipeLeft {
-    0%, 100% {
-        transform: translateX(0);
+@keyframes swipeLeftCircular {
+    0% {
+        transform: rotate(0deg) translateY(0px);
     }
     50% {
-        transform: translateX(-55px);
+        transform: rotate(-15deg) translateY(-20px);
+    }
+    100% {
+        transform: rotate(0deg) translateY(0px);
     }
 }
 
 .swipe-right {
-    animation: swipeRight 0.5s ease-in-out forwards;
+    animation: swipeRightCircular 0.5s ease-in-out forwards;
+    transform-origin: bottom center;
 }
 
 .swipe-left {
-    animation: swipeLeft 0.5s ease-in-out forwards;
+    animation: swipeLeftCircular 0.5s ease-in-out forwards;
+    transform-origin: bottom center;
 }
 
 #login-modal {
